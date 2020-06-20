@@ -26,13 +26,16 @@ class ActiveIngredientsRequest extends FormRequest
         return [
             'name'=>'required',
             'potential_harm'=>'nullable',
-            'fish'=>'nullable',
-            'daphnia'=>'nullable',
-            'bee'=>'nullable',
-            'algae'=>'nullable',
-            'dt50'=>'nullable',
-            'koc'=>'nullable',
-            'gus'=>'nullable',
+            'aquatic'=>'nullable',
+            'aquatic_desc'=>'nullable',
+            'bees'=>'nullable',
+            'bees_desc'=>'nullable',
+            'earthworm'=>'nullable',
+            'earthworm_desc'=>'nullable',
+            'birds'=>'nullable',
+            'birds_desc'=>'nullable',
+            'leachability'=>'nullable',
+            'leachability_desc'=>'nullable',
             'carcinogenicity'=>'nullable',
             'mutagenicity'=>'nullable',
             'edc'=>'nullable',
@@ -40,7 +43,7 @@ class ActiveIngredientsRequest extends FormRequest
             'ache'=>'nullable',
             'neurotoxicant'=>'nullable',
             'who_classification'=>'nullable',
-            'tp_sum'=>'nullable',
+            'eu_approved'=>'nullable',
         ];
     }
 }

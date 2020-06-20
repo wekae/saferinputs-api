@@ -8,7 +8,7 @@ interface CRUDRepository
 {
     public function create(array $attributes);
 
-    public function all();
+    public function all(array $attributes);
 
     public function find($id);
 

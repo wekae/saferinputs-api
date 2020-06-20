@@ -25,10 +25,13 @@ class AgrochemRequest extends FormRequest
         return [
             'product_name'=> 'required',
             'distributing_company'=> 'nullable',
+            'pcpb_number'=> 'nullable',
+            'toxic'=> 'nullable',
+            'who_class'=> 'nullable',
+            'composition'=> 'nullable',
             'registrant'=>'nullable',
             'type'=>'nullable',
             'phi_days'=>'nullable',
-            'crops'=>'nullable',
             'image'=>'nullable',
             'active_ingredients'=>'nullable',
             'pests_disease_weed'=>'nullable'

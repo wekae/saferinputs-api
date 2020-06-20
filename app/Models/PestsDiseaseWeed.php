@@ -4,9 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Laravel\Scout\Searchable;
+use Spatie\Searchable\SearchResult;
 
-class PestsDiseaseWeed extends Model
+class PestsDiseaseWeed extends Model implements \Spatie\Searchable\Searchable
 {
+    /**
+     * Implementation for Spatie Laravel Search
+     * @return SearchResult
+     */
+    public function getSearchResult(): SearchResult
+    {
+        $url = "";
+
+        return new SearchResult(
+            $this,
+            "Pest Disease Weed",
+            $url
+        );
+    }
 
     /**
      * The table associated with the model.
@@ -14,6 +30,62 @@ class PestsDiseaseWeed extends Model
      * @var string
      */
     protected $table = 'pests_disease_weed';
+
+
+    /**
+     * Implementation for individual table indexing in Algolia
+     */
+//    use Searchable;
+
+    /**
+     * Get the index name for the model.
+     *
+     * @return string
+     */
+//    public function searchableAs()
+//    {
+//        return 'pests_disease_weed_index';
+//    }
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array
+     */
+//    public function toSearchableArray()
+//    {
+////        return [
+////            'name' => $this->name,
+////            'type' => $this->type,
+////            'scientific_name' => $this->scientific_name,
+////            'crops_affected' => $this->crops_affected,
+////            'description_pest' => $this->description_pest,
+////            'description_impact' => $this->description_impact,
+////            'references' => $this->references,
+////            'model'=>$this->table,
+////            'crops' => $this->crops,
+////            'local_names' => $this->localNames,
+////            'agrochem_products' => $this->agrochemProducts,
+////            'gap' => $this->gap,
+////            'homemade_organic' => $this->homemadeOrganic,
+////            'commercial_organic' => $this->commercialOrganic,
+////        ];
+//
+//
+//
+//        $array = $this->toArray();
+//
+//        // Applies Scout Extended default transformations:
+//        $array = $this->transform($array);
+//
+//        // Add an extra attribute:
+//        $array['model'] = $this->table;
+//
+//        return $array;
+//    }
+    /**
+     * #Implementation for individual table indexing in Algolia
+     */
 
 
 
@@ -76,5 +148,9 @@ class PestsDiseaseWeed extends Model
 
     public function crops(){
         return $this->belongsToMany('App\Models\Crops', 'pests_disease_weed_crops', 'pest_disease_weed_id', 'crops_id');
+    }
+
+    public function controlMethods(){
+        return $this->belongsToMany('App\Models\ControlMethods', 'pests_disease_weed_control_methods', 'pest_disease_weed_id', 'control_methods_id');
     }
 }

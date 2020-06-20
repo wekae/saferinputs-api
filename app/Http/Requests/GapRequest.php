@@ -23,9 +23,11 @@ class GapRequest extends FormRequest
      */
     public function rules(){
         return [
+            'name'=> 'nullable',
+            'category'=> 'nullable',
             'practices'=> 'nullable',
-            'pests_diseases_weeds_controlled'=> 'nullable',
-            'references'=>'nullable'
+            'references'=>'nullable',
+            'image'=>'nullable',
         ];
     }
 }

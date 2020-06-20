@@ -17,12 +17,29 @@ class AgrochemService
         $this->agrochemRepository = $agrochemRepository ;
     }
 
-    public function findAll(){
-        return $this->agrochemRepository->all();
+    public function findAll(Request $request){
+        $attributes = array("request"=>$request);
+        return $this->agrochemRepository->all($attributes);
     }
 
     public function find($id){
         return $this->agrochemRepository->find($id);
+    }
+    public function findCrops($request){
+        $attributes = array("request"=>$request);
+        return $this->agrochemRepository->findCrops($attributes);
+    }
+    public function findActiveIngredients($request){
+        $attributes = array("request"=>$request);
+        return $this->agrochemRepository->findActiveIngredients($attributes);
+    }
+    public function findPestDiseaseWeeds($request){
+        $attributes = array("request"=>$request);
+        return $this->agrochemRepository->findPestDiseaseWeeds($attributes);
+    }
+
+    public function getAgrochemNames(){
+        return $this->agrochemRepository->getAgrochemNames();
     }
 
     public function create(AgrochemRequest $request){
@@ -31,7 +48,7 @@ class AgrochemService
     }
 
     public function update(AgrochemRequest $request, $id){
-        $attributes = $request->validated();
+        $attributes = array("request"=>$request);
         return $this->agrochemRepository->update($id, $attributes);
     }
 
@@ -42,6 +59,28 @@ class AgrochemService
     public function filter(Request $request){
         $attributes = array("request"=>$request);
         return $this->agrochemRepository->filter($attributes);
+    }
+
+    public function summaryCount(Request $request){
+        $attributes = array('request'=>$request);
+        return $this->agrochemRepository->summaryCount($attributes);
+    }
+    public function summaryCountActiveIngredients(Request $request){
+        $attributes = array('request'=>$request);
+        return $this->agrochemRepository->summaryCountActiveIngredients($attributes);
+    }
+    public function summaryCountPestsDiseaseWeed(Request $request){
+        $attributes = array('request'=>$request);
+        return $this->agrochemRepository->summaryCountPestsDiseaseWeed($attributes);
+    }
+    public function summaryCountCrops(Request $request){
+        $attributes = array('request'=>$request);
+        return $this->agrochemRepository->summaryCountCrops($attributes);
+    }
+
+    public function summaryNames(Request $request){
+        $attributes = array('request'=>$request);
+        return $this->agrochemRepository->summaryNames($attributes);
     }
 
     public function dataTable(Request $request){

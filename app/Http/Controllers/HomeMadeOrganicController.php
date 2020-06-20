@@ -51,8 +51,8 @@ class HomeMadeOrganicController extends Controller
 
     }
 
-    public function all(){
-        $items = $this->homeMadeOrganicService->findAll();
+    public function all(Request $request){
+        $items = $this->homeMadeOrganicService->findAll($request);
 
         if($items->count()>0){
             return HomeMadeOrganicResource::collection($items);
@@ -71,6 +71,35 @@ class HomeMadeOrganicController extends Controller
         }else{
             $status_code = $this->notFoundStatus;
             $message = "Item not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+    public function findPestsDiseaseWeed(Request $request){
+        $item = $this->homeMadeOrganicService->findPestsDiseaseWeed($request);
+        if($item){
+//            return $item;
+            return response()->json(['data'=>$item], $this->successStatus);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Item not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+
+    public function getHomemadeOrganicNames(){
+        $items = $this->homeMadeOrganicService->getHomemadeOrganicNames();
+
+        if($items->count()>0){
+//            return response()->json(['data'=>$items], $this->successStatus);
+            $status_code = $this->successStatus;
+            $message = $items->count()." Items found";
+            $response = $this->successMessage($status_code, $message, $items);
+            return response($response, $this->successStatus);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Items not found";
             $response = $this->failureMessage($status_code, $message);
             return response($response, $status_code);
         }
@@ -99,7 +128,7 @@ class HomeMadeOrganicController extends Controller
         if($saved){
             $status_code = $this->createdStatus;
             $message = "Updated";
-            $response = $this->successMessage($status_code, $message, $saved);
+            $response = $this->successMessage($status_code, $message, new HomeMadeOrganicResource($saved));
 
             return response($response, $status_code);
         }else{
@@ -129,10 +158,43 @@ class HomeMadeOrganicController extends Controller
 
     public function filter(Request $request){
         $items = $this->homeMadeOrganicService->filter($request);
-        if(sizeof($items)>0){
-            $status_code = $this->createdStatus;
-            $message = "Items found";
-            $response = $this->successMessage($status_code, $message, $items);
+
+        if($items->count()>0){
+            return HomeMadeOrganicResource::collection($items);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Items not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+
+    public function summaryCount(Request $request){
+        $count = $this->homeMadeOrganicService->summaryCount($request);;
+        $status_code = $this->successStatus;
+        $response =  [
+            "total" => $count
+        ];
+        return response($response, $status_code);
+    }
+    public function summaryCountPestsDiseaseWeed(Request $request){
+        $count = $this->homeMadeOrganicService->summaryCountPestsDiseaseWeed($request);;
+        $status_code = $this->successStatus;
+        $response =  [
+            "total" => $count
+        ];
+        return response($response, $status_code);
+    }
+
+    public function summaryNames(Request $request){
+        $items = $this->homeMadeOrganicService->summaryNames($request);
+
+
+        //Implementation without relationships
+        if($items->count()>0){
+            $message = $items->count()." Items found";
+            $status_code = $this->successStatus;
+            $response =  $items;
             return response($response, $status_code);
         }else{
             $status_code = $this->notFoundStatus;

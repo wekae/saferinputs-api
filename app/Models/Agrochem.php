@@ -3,9 +3,25 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
+use Spatie\Searchable\SearchResult;
 
-class Agrochem extends Model
+class Agrochem extends Model implements \Spatie\Searchable\Searchable
 {
+    /**
+     * Implementation for Spatie Laravel Search
+     * @return SearchResult
+     */
+    public function getSearchResult(): SearchResult
+    {
+        $url = "";
+
+        return new SearchResult(
+            $this,
+            "Agrochem",
+            $url
+        );
+    }
 
     /**
      * The table associated with the model.
@@ -15,18 +31,75 @@ class Agrochem extends Model
     protected $table = 'agrochem';
 
 
+    /**
+     * Implementation for individual table indexing in Algolia
+     */
+//    use Searchable;
+
+    /**
+     * Get the index name for the model.
+     *
+     * @return string
+     */
+//    public function searchableAs()
+//    {
+//        return 'agrochems_index';
+//    }
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array
+     */
+//    public function toSearchableArray()
+//    {
+////        return [
+////            'product_name' => $this->product_name,
+////            'pcpb_number' => $this->pcpb_number,
+////            'distributing_company' => $this->distributing_company,
+////            'toxic' => $this->toxic,
+////            'who_class' => $this->who_class,
+////            'composition' => $this->composition,
+////            'registrant' => $this->registrant,
+////            'type' => $this->type,
+////            'phi_days' => $this->phi_days,
+////            'model'=>$this->table,
+////            'pests_disease_weed' => $this->agrochem,
+////            'crops' => $this->crops,
+////            'pests_disease_weed' => $this->pestsDiseaseWeed,
+////            'active_ingredients' => $this->activeIngredients,
+////        ];
+//
+//
+//        $array = $this->toArray();
+//
+//        // Applies Scout Extended default transformations:
+//        $array = $this->transform($array);
+//
+//        // Add an extra attribute:
+//        $array['model'] = $this->table;
+//
+//        return $array;
+//    }
+    /**
+     * #Implementation for individual table indexing in Algolia
+     */
+
+
 
     const CREATED_AT = 'creation_date';
     const UPDATED_AT = 'last_update';
 
     protected $fillable = [
         'product_name',
-        'product_type',
+        'pcpb_number',
         'distributing_company',
+        'toxic',
+        'who_class',
+        'composition',
         'registrant',
         'type',
         'phi_days',
-        'crops',
         'image',
         'active_ingredients',
         'pests_disease_weed',

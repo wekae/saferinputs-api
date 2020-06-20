@@ -17,25 +17,33 @@ class GapService
         $this->gapRepository = $gapRepository;
     }
 
-    public function findAll()
+    public function findAll(Request $request)
     {
-        return $this->gapRepository->all();
+        $attributes = array("request" => $request);
+        return $this->gapRepository->all($attributes);
     }
 
     public function find($id)
     {
         return $this->gapRepository->find($id);
     }
+    public function findPestsDiseaseWeed(Request $request){
+        $attributes = array("request"=>$request);
+        return $this->gapRepository->findPestsDiseaseWeed($attributes);
+    }
 
-    public function create(GapRequest $request)
+    public function getGapNames()
     {
-        $attributes = $request->validated();
+        return $this->gapRepository->getGapNames();
+    }
+
+    public function create(GapRequest $request){
+        $attributes = array("request"=>$request);
         return $this->gapRepository->create($attributes);
     }
 
-    public function update(GapRequest $request, $id)
-    {
-        $attributes = $request->validated();
+    public function update(GapRequest $request, $id){
+        $attributes = array("request"=>$request);
         return $this->gapRepository->update($id, $attributes);
     }
 
@@ -47,6 +55,20 @@ class GapService
     public function filter(Request $request){
         $attributes = array("request"=>$request);
         return $this->gapRepository->filter($attributes);
+    }
+
+    public function summaryCount(Request $request){
+        $attributes = array('request'=>$request);
+        return $this->gapRepository->summaryCount($attributes);
+    }
+    public function summaryCountPestsDiseaseWeed(Request $request){
+        $attributes = array('request'=>$request);
+        return $this->gapRepository->summaryCountPestsDiseaseWeed($attributes);
+    }
+
+    public function summaryNames(Request $request){
+        $attributes = array('request'=>$request);
+        return $this->gapRepository->summaryNames($attributes);
     }
 
     public function dataTable(Request $request){

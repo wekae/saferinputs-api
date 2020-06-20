@@ -51,11 +51,28 @@ class LocalNamesController extends Controller
 
     }
 
-    public function all(){
-        $items = $this->localNamesService->findAll();
+    public function all(Request $request){
+        $items = $this->localNamesService->findAll($request);
 
         if($items->count()>0){
             return LocalNamesResource::collection($items);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Items not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+
+    public function getLocalNameNames(){
+        $items = $this->localNamesService->getLocalNameNames();
+
+        if($items->count()>0){
+//            return response()->json(['data'=>$items], $this->successStatus);
+            $status_code = $this->successStatus;
+            $message = $items->count()." Items found";
+            $response = $this->successMessage($status_code, $message, $items);
+            return response($response, $this->successStatus);
         }else{
             $status_code = $this->notFoundStatus;
             $message = "Items not found";
@@ -68,6 +85,20 @@ class LocalNamesController extends Controller
         $item = $this->localNamesService->find($id);
         if($item){
             return new localNamesResource($item);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Item not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+
+
+    public function findPestsDiseaseWeed(Request $request){
+        $item = $this->localNamesService->findPestsDiseaseWeed($request);
+        if($item){
+//            return $item;
+            return response()->json(['data'=>$item], $this->successStatus);
         }else{
             $status_code = $this->notFoundStatus;
             $message = "Item not found";
@@ -99,7 +130,7 @@ class LocalNamesController extends Controller
         if($saved){
             $status_code = $this->createdStatus;
             $message = "Updated";
-            $response = $this->successMessage($status_code, $message, $saved);
+            $response = $this->successMessage($status_code, $message, new LocalNamesResource($saved));
 
             return response($response, $status_code);
         }else{
@@ -129,10 +160,43 @@ class LocalNamesController extends Controller
 
     public function filter(Request $request){
         $items = $this->localNamesService->filter($request);
-        if(sizeof($items)>0){
-            $status_code = $this->createdStatus;
-            $message = "Items found";
-            $response = $this->successMessage($status_code, $message, $items);
+
+        if($items->count()>0){
+            return LocalNamesResource::collection($items);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Items not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+
+    public function summaryCount(Request $request){
+        $count = $this->localNamesService->summaryCount($request);;
+        $status_code = $this->successStatus;
+        $response =  [
+            "total" => $count
+        ];
+        return response($response, $status_code);
+    }
+    public function summaryCountPestsDiseaseWeed(Request $request){
+        $count = $this->localNamesService->summaryCountPestsDiseaseWeed($request);;
+        $status_code = $this->successStatus;
+        $response =  [
+            "total" => $count
+        ];
+        return response($response, $status_code);
+    }
+
+    public function summaryNames(Request $request){
+        $items = $this->localNamesService->summaryNames($request);
+
+
+        //Implementation without relationships
+        if($items->count()>0){
+            $message = $items->count()." Items found";
+            $status_code = $this->successStatus;
+            $response =  $items;
             return response($response, $status_code);
         }else{
             $status_code = $this->notFoundStatus;

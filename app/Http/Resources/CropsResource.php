@@ -17,8 +17,11 @@ class CropsResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'created_at' => $this->creation_date,
-            'updated_at' => $this->last_update,
+            'image' => $this->image,
+            'pests_disease_weed' => $this->pestsDiseaseWeed,
+            'agrochems' => $this->agrochem,
+//            'created_at' => $this->creation_date,
+//            'updated_at' => $this->last_update,
         ];
     }
 }

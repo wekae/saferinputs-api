@@ -14,47 +14,27 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
+Route::get('/', array('uses'=>'InitController@index'));
 
 //Clear Cache facade value:
-Route::get('/clear-cache', function() {
-    $exitCode = Artisan::call('cache:clear');
-});
+Route::get('/clear-cache', array('uses'=>'InitController@clearCache'));
 
 //Reoptimized class loader:
-Route::get('/optimize', function() {
-    $exitCode = Artisan::call('optimize');
-});
+Route::get('/optimize', array('uses'=>'InitController@optimize'));
 
 //Route cache:
-Route::get('/route-cache', function() {
-    $exitCode = Artisan::call('route:cache');
-});
+Route::get('/route-cache', array('uses'=>'InitController@routeCache'));
 
 //Clear Route cache:
-Route::get('/route-clear', function() {
-    $exitCode = Artisan::call('route:clear');
-});
+Route::get('/route-clear', array('uses'=>'InitController@routeClear'));
 
 //Clear View cache:
-Route::get('/view-clear', function() {
-    $exitCode = Artisan::call('view:clear');
-});
+Route::get('/view-clear', array('uses'=>'InitController@viewClear'));
 
 //Clear Config cache:
-Route::get('/config-cache', function() {
-    $exitCode = Artisan::call('config:cache');
-});
+Route::get('/config-cache', array('uses'=>'InitController@configCache'));
 
 //Init cache:
-Route::get('/init-cache', function() {
-    Artisan::call('cache:clear');
-    Artisan::call('config:clear');
-    Artisan::call('view:clear');
-    Artisan::call('config:cache');
-});
+Route::get('/init-cache', array('uses'=>'InitController@initCache'));
 
 

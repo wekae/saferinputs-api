@@ -19,8 +19,11 @@ class LocalNamesResource extends JsonResource
             'language_ethnic_group' => $this->language_ethnic_group,
             'english_name' => $this->english_name,
             'local_name' => $this->local_name,
-            'created_at' => $this->creation_date,
-            'updated_at' => $this->last_update,
+            'category' => $this->category,
+            'region' => $this->region,
+            'pests_diseases_weeds' => $this->pestsDiseaseWeed,
+//            'created_at' => $this->creation_date,
+//            'updated_at' => $this->last_update,
         ];
     }
 }

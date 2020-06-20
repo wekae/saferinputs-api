@@ -51,8 +51,8 @@ class GapController extends Controller
 
     }
 
-    public function all(){
-        $items = $this->gapService->findAll();
+    public function all(Request $request){
+        $items = $this->gapService->findAll($request);
 
         if($items->count()>0){
             return GapResource::collection($items);
@@ -71,6 +71,35 @@ class GapController extends Controller
         }else{
             $status_code = $this->notFoundStatus;
             $message = "Item not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+    public function findPestsDiseaseWeed(Request $request){
+        $item = $this->gapService->findPestsDiseaseWeed($request);
+        if($item){
+//            return $item;
+            return response()->json(['data'=>$item], $this->successStatus);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Item not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+
+    public function getGapNames(){
+        $items = $this->gapService->getGapNames();
+
+        if($items->count()>0){
+//            return response()->json(['data'=>$items], $this->successStatus);
+            $status_code = $this->successStatus;
+            $message = $items->count()." Items found";
+            $response = $this->successMessage($status_code, $message, $items);
+            return response($response, $this->successStatus);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Items not found";
             $response = $this->failureMessage($status_code, $message);
             return response($response, $status_code);
         }
@@ -99,7 +128,7 @@ class GapController extends Controller
         if($saved){
             $status_code = $this->createdStatus;
             $message = "Updated";
-            $response = $this->successMessage($status_code, $message, $saved);
+            $response = $this->successMessage($status_code, $message, new GapResource($saved));
 
             return response($response, $status_code);
         }else{
@@ -129,10 +158,43 @@ class GapController extends Controller
 
     public function filter(Request $request){
         $items = $this->gapService->filter($request);
-        if(sizeof($items)>0){
-            $status_code = $this->createdStatus;
-            $message = "Items found";
-            $response = $this->successMessage($status_code, $message, $items);
+
+        if($items->count()>0){
+            return GapResource::collection($items);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Items not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+
+    public function summaryCount(Request $request){
+        $count = $this->gapService->summaryCount($request);;
+        $status_code = $this->successStatus;
+        $response =  [
+            "total" => $count
+        ];
+        return response($response, $status_code);
+    }
+    public function summaryCountPestsDiseaseWeed(Request $request){
+        $count = $this->gapService->summaryCountPestsDiseaseWeed($request);;
+        $status_code = $this->successStatus;
+        $response =  [
+            "total" => $count
+        ];
+        return response($response, $status_code);
+    }
+
+    public function summaryNames(Request $request){
+        $items = $this->gapService->summaryNames($request);
+
+
+        //Implementation without relationships
+        if($items->count()>0){
+            $message = $items->count()." Items found";
+            $status_code = $this->successStatus;
+            $response =  $items;
             return response($response, $status_code);
         }else{
             $status_code = $this->notFoundStatus;

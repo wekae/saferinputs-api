@@ -4,42 +4,140 @@
 namespace App\Repositories;
 
 
+use App\Facades\UtilsFacade;
 use App\Http\Resources\CropsCollection;
 use App\Http\Resources\CropsResource;
+use App\Models\Agrochem;
 use App\Models\Crops;
+use App\Models\PestsDiseaseWeed;
+use App\Services\ImageService;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\QueryException;
 
-class CropsRepositoryMysqlImpl
+class CropsRepositoryMysqlImpl implements CropsRepository
 {
     protected  $crops;
-    public function __construct(Crops $crops)
+    protected  $imageService;
+    public function __construct(Crops $crops, ImageService $imageService)
     {
         $this->crops = $crops;
+        $this->imageService = $imageService;
     }
 
     public function create($attributes)
     {
-        if(array_key_exists("name", $attributes)){
-            //Handle single insert
-            return $this->crops->create($attributes);
-        }else{
-            //handle mass insert
-            return $this->crops->insert($attributes);
+        try{
+            $request = $attributes['request'];
+            $data = $this->crops->create($request->only(
+                [
+                    'name',
+                ]
+            ))->refresh();
+
+            $data->pestsDiseaseWeed()->saveMany(PestsDiseaseWeed::findMany($request->pests_disease_weed));
+            $data->agrochem()->saveMany(Agrochem::findMany($request->agrochems));
+
+            //Save image
+            $image = $request->image;
+            if($image) {
+                $data = UtilsFacade::uploadImage($image, $data);
+            }
+            return array(
+                'success'=>true,
+                'item'=>$data
+            );
+        }catch (QueryException $e) {
+            $error_code = $e->errorInfo[1];
+            //Determine duplicate key using error code
+            if ($error_code == 1062) {
+                $return_date = array(
+                    'success'=>false,
+                    'duplicate'=>true);
+                return $return_date;
+            }
         }
+//        //handle mass insert
+//        return array(
+//            'success'=>true,
+//            'item'=>$this->crops->insertOrIgnore($attributes)
+//        );
     }
 
-    public function all(){
-        return $this->crops->all();
+    public function all($attributes){
+        $request = $attributes["request"];
+        $order_column = $request->order_column;
+        $order_direction = $request->order_direction;
+        $per_page = $request->per_page;
+        if($order_column==null){
+            $order_column="id";
+        }
+        if($order_direction==null){
+            $order_direction="asc";
+        }
+        if($per_page==null){
+            $per_page=config('app.items_per_page');
+        }
+        return $this->crops
+            ->orderBy($order_column, $order_direction)
+            ->paginate($per_page);
     }
 
     public function find($id){
         return $this->crops->find($id);
     }
+    public function findAgrochems($attributes){
+        $request = $attributes['request'];
+
+        $items = $this->findRelationItems("agrochem", $request);
+
+        return $items;
+    }
+    public function findPestsDiseasesWeeds($attributes){
+        $request = $attributes['request'];
+
+        $items = $this->findRelationItems("pestsDiseaseWeed", $request);
+
+        return $items;
+    }
+    private function findRelationItems($relation, $request){
+
+        try{
+            $items = Crops::with([$relation => function($query) use($request){
+                foreach ($request->except('id') as $key => $value){
+                    if($key=="toxic"){
+                        $query = $query->where($key,UtilsFacade::formatToBinary($value));
+                    }else{
+                        $query = $query->where($key,'like', '%'.$value.'%');
+                    }
+                }
+            }])->where('id',$request->id)->firstOrFail();
+
+            return $items;
+        }catch(\Exception $e){
+//            Log::info($e, [$this]);
+            return null;
+        }
+    }
+
+    public function getCropNames(){
+        return $this->crops->select('id','name')->orderBy('name', 'asc')->get();
+    }
+
 
     public function update($id, array $attributes)
     {
+        $request = $attributes['request'];
         $item = $this->crops->find($id);
+
         if($item){
-            $this->crops->find($id)->update($attributes);
+            $item->update($request->only(
+                [
+                    'name',
+                ]
+            ));
+            $item->agrochem()->sync(Agrochem::findMany($request->agrochems));
+            $item->pestsDiseaseWeed()->sync(PestsDiseaseWeed::findMany($request->pests_disease_weed));
+
             return $item->refresh();
         }else{
             return false;
@@ -50,6 +148,7 @@ class CropsRepositoryMysqlImpl
     {
         $item = $this->crops->find($id);
         if($item){
+            $this->imageService->deleteImage($item);
             $item->delete();
             return true;
         }else{
@@ -57,13 +156,77 @@ class CropsRepositoryMysqlImpl
         }
     }
 
-    public function filter(array $attributes){
+    public function summaryCount(array $attributes){
+        $request = $attributes["request"];
+        $search_value = $request->search_value;
+
+        $columns_array = array (
+            'name'
+        );
+
+        $data = Crops::select('id');
+
+        /**
+         * Filter data based on the search query
+         */
+        if($search_value) {
+            /**
+             * create a nested OR clause to search by specific column
+             */
+            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+                /**
+                 * append each table column to the query
+                 */
+                foreach ($columns_array as $column) {
+                    $query->orWhere($column, 'like', '%' . $search_value . '%');
+                }
+            });
+        }
+//        }else{
+            /*
+             * Search spefific columns
+             */
+            foreach ($request->all() as $key => $value){
+                $data = $data->where($key,'like', '%'.$value.'%');
+            }
+//        }
+
+        /**
+         * Get the total
+         */
+        $data = $data->count();
+        return $data;
+    }
+    public function summaryCountAgrochems(array $attributes){
+        $request = $attributes["request"];
+        $data = $this->getCountSummaryForRelation("agrochem", $request);
+        return $data;
+    }
+    public function summaryCountPestsDiseasesWeeds(array $attributes){
+        $request = $attributes["request"];
+        $data = $this->getCountSummaryForRelation("pestsDiseaseWeed", $request);
+        return $data;
+    }
+    private function getCountSummaryForRelation($relation, $request){
+        $data = Crops::whereHas($relation, function (Builder $query) use ($request){
+            foreach ($request->except('id') as $key => $value){
+                if($key=="toxic"){
+                    $toxic = UtilsFacade::formatToBinary($value);
+                    $query = $query->where($key,'like', '%'.$toxic.'%');
+                }else{
+                    $query = $query->where($key,'like', '%'.$value.'%');
+                }
+            }
+        })->count();
+        return $data;
+    }
+
+    public function summaryNames(array $attributes){
         $request = $attributes["request"];
         $search_value = $request->search_value;
         $order_column = $request->order_column;
         $order_direction = $request->order_direction;
-        $limit = $request->limit;
-        $offset = $request->offset;
+        $per_page = $request->per_page;
 
         if($order_column==null){
             $order_column="id";
@@ -71,11 +234,75 @@ class CropsRepositoryMysqlImpl
         if($order_direction==null){
             $order_direction="desc";
         }
-        if($limit==null){
-            $limit=10;
+        if($per_page==null){
+            $per_page=config('app.items_per_page');
         }
-        if($offset==null){
-            $offset=0;
+
+        $columns_array = array (
+            'name'
+        );
+
+        $data = Crops::select('id','name','image');
+
+
+
+        /**
+         * Filter data based on the search query
+         */
+        if($search_value) {
+            /**
+             * create a nested OR clause to search by specific column
+             */
+            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+                /**
+                 * append each table column to the query
+                 */
+                foreach ($columns_array as $column) {
+                    $query->orWhere($column, 'like', '%' . $search_value . '%');
+                }
+            });
+        }
+//        }else{
+            /*
+             * Search spefific columns
+             */
+            foreach ($request->all() as $key => $value){
+                $data = $data->where($key,'like', '%'.$value.'%');
+            }
+//        }
+
+
+
+
+
+        /**
+         * Set ordering
+         */
+        $data = $data->orderBy($order_column, $order_direction);
+
+
+        /**
+         * Get the filtered records
+         */
+        $data = $data->paginate($per_page);
+        return $data;
+    }
+
+    public function filter(array $attributes){
+        $request = $attributes["request"];
+        $search_value = $request->search_value;
+        $order_column = $request->order_column;
+        $order_direction = $request->order_direction;
+        $per_page = $request->per_page;
+
+        if($order_column==null){
+            $order_column="id";
+        }
+        if($order_direction==null){
+            $order_direction="desc";
+        }
+        if($per_page==null){
+            $per_page=config('app.items_per_page');
         }
 
         $columns_array = array (
@@ -85,23 +312,34 @@ class CropsRepositoryMysqlImpl
         $data = Crops::select();
 
 
+
         /**
          * Filter data based on the search query
          */
-        if($search_value){
+        if($search_value) {
             /**
-             * create a nested OR clause
+             * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function($query) use($columns_array, $search_value){
+            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column){
-                    $query->orWhere($column,'like','%'.$search_value.'%');
+                foreach ($columns_array as $column) {
+                    $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
-
             });
         }
+//        }else{
+            /*
+             * Search spefific columns
+             */
+            foreach ($request->all() as $key => $value){
+                $data = $data->where($key,'like', '%'.$value.'%');
+            }
+//        }
+
+
+
 
 
         /**
@@ -109,19 +347,11 @@ class CropsRepositoryMysqlImpl
          */
         $data = $data->orderBy($order_column, $order_direction);
 
-        /**
-         * Set limit and offset for pagination
-         */
-        $data = $data
-            ->skip($offset)
-            ->take($limit);
-
 
         /**
          * Get the filtered records
          */
-        $data = $data->get();
-
+        $data = $data->paginate($per_page);
         return $data;
     }
 

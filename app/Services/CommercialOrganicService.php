@@ -17,25 +17,36 @@ class CommercialOrganicService
         $this->commercialOrganicRepository = $commercialOrganicRepository;
     }
 
-    public function findAll()
-    {
-        return $this->commercialOrganicRepository->all();
+    public function findAll(Request $request){
+        $attributes = array("request"=>$request);
+        return $this->commercialOrganicRepository->all($attributes);
     }
 
     public function find($id)
     {
         return $this->commercialOrganicRepository->find($id);
     }
+    public function findPestsDiseaseWeed(Request $request){
+        $attributes = array("request"=>$request);
+        return $this->commercialOrganicRepository->findPestsDiseaseWeed($attributes);
+    }
+    public function findControlMethods(Request $request){
+        $attributes = array("request"=>$request);
+        return $this->commercialOrganicRepository->findControlMethods($attributes);
+    }
 
-    public function create(CommercialOrganicRequest $request)
+    public function getCommercialOrganicNames()
     {
-        $attributes = $request->validated();
+        return $this->commercialOrganicRepository->getCommercialOrganicNames();
+    }
+
+    public function create(CommercialOrganicRequest $request){
+        $attributes = array("request"=>$request);
         return $this->commercialOrganicRepository->create($attributes);
     }
 
-    public function update(CommercialOrganicRequest $request, $id)
-    {
-        $attributes = $request->validated();
+    public function update(CommercialOrganicRequest $request, $id){
+        $attributes = array("request"=>$request);
         return $this->commercialOrganicRepository->update($id, $attributes);
     }
 
@@ -47,6 +58,24 @@ class CommercialOrganicService
     public function filter(Request $request){
         $attributes = array("request"=>$request);
         return $this->commercialOrganicRepository->filter($attributes);
+    }
+
+    public function summaryCount(Request $request){
+        $attributes = array('request'=>$request);
+        return $this->commercialOrganicRepository->summaryCount($attributes);
+    }
+    public function summaryCountPestsDiseaseWeed(Request $request){
+        $attributes = array('request'=>$request);
+        return $this->commercialOrganicRepository->summaryCountPestsDiseaseWeed($attributes);
+    }
+    public function summaryCountControlMethods(Request $request){
+        $attributes = array('request'=>$request);
+        return $this->commercialOrganicRepository->summaryCountControlMethods($attributes);
+    }
+
+    public function summaryNames(Request $request){
+        $attributes = array('request'=>$request);
+        return $this->commercialOrganicRepository->summaryNames($attributes);
     }
 
     public function dataTable(Request $request){

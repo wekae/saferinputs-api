@@ -23,9 +23,11 @@ class LocalNamesRequest extends FormRequest
      */
     public function rules(){
         return [
-            'language_ethnic_group'=> 'required',
+            'language_ethnic_group'=> 'nullable',
             'english_name'=> 'nullable',
             'local_name'=>'nullable',
+            'category'=>'nullable',
+            'region'=>'nullable',
         ];
     }
 }

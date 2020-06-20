@@ -23,10 +23,11 @@ class HomeMadeOrganicRequest extends FormRequest
      */
     public function rules(){
         return [
+            'name'=> 'nullable',
             'practices'=> 'nullable',
             'external_links'=> 'nullable',
-            'pests_diseases_weeds_controlled'=>'nullable',
             'references'=>'nullable',
+            'image'=>'nullable',
         ];
     }
 }

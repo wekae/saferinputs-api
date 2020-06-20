@@ -30,8 +30,9 @@ class PestsDiseaseWeedResource extends JsonResource
             'gap' => GapResource::collection($this->gap),
             'homemade_organic' => HomeMadeOrganicResource::collection($this->homemadeOrganic),
             'commercial_organic' => CommercialOrganicResource::collection($this->commercialOrganic),
-            'created_at' => $this->creation_date,
-            'updated_at' => $this->last_update,
+            'control_methods' => ControlMethodsResource::collection($this->controlMethods),
+//            'created_at' => $this->creation_date,
+//            'updated_at' => $this->last_update,
         ];
     }
 }

@@ -16,11 +16,14 @@ class GapResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'name' => $this->name,
+            'category' => $this->category,
             'practices' => $this->practices,
-            'pests_diseases_weeds_controlled' => $this->pests_diseases_weeds_controlled,
+            'pests_diseases_weeds' => $this->pestsDiseaseWeed,
             'references' => $this->references,
-            'created_at' => $this->creation_date,
-            'updated_at' => $this->last_update,
+            'image' => $this->image,
+//            'created_at' => $this->creation_date,
+//            'updated_at' => $this->last_update,
         ];
     }
 }

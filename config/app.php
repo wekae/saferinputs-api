@@ -174,6 +174,14 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\UtilsFacadeServiceProvider::class,
+
+
+        /*
+         * Custom Service Providers
+         */
+
+        Intervention\Image\ImageServiceProvider::class,
 
     ],
 
@@ -226,7 +234,20 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'Image' => Intervention\Image\Facades\Image::class,
+        'UtilsFacade' => App\Facades\UtilsFacade::class,
 
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Items Per Page
+    |--------------------------------------------------------------------------
+    |
+    | This value is the default number of items per page to be used in pagination
+    |
+    */
+
+    'items_per_page' => env('ITEMS_PER_PAGE',15),
 
 ];

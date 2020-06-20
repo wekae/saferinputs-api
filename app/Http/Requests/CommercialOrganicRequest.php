@@ -24,12 +24,15 @@ class CommercialOrganicRequest extends FormRequest
     public function rules(){
         return [
             'name'=> 'required',
+            'pcpb_number'=> 'nullable',
             'manufacturer'=> 'nullable',
             'distributor'=>'nullable',
+            'category'=>'nullable',
             'contact_details'=>'nullable',
+            'image'=>'nullable',
             'external_links'=>'nullable',
             'application_details'=>'nullable',
-            'pests_diseases_weeds_controlled'=>'nullable',
+            'pests_diseases_weeds'=>'nullable',
         ];
     }
 }
