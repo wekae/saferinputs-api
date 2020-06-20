@@ -13,38 +13,38 @@ class ActiveIngredientsRepositoryMySqlImpl implements ActiveIngredientsRepositor
 {
 
     protected  $activeIngredients;
+    private $columns_array;
     public function __construct(ActiveIngredients $activeIngredients)
     {
         $this->activeIngredients = $activeIngredients;
+        $this->columns_array = array (
+            'name',
+            'potential_harm',
+            'aquatic',
+            'aquatic_desc',
+            'bees',
+            'bees_desc',
+            'earthworm',
+            'earthworm_desc',
+            'birds',
+            'birds_desc',
+            'leachability',
+            'leachability_desc',
+            'carcinogenicity',
+            'mutagenicity',
+            'edc',
+            'reproduction',
+            'ache',
+            'neurotoxicant',
+            'who_classification',
+            'eu_approved',
+        );
     }
 
     public function create($attributes)
     {
         $request = $attributes['request'];
-        $saved_item = $this->activeIngredients->create($request->only(
-            [
-                'name',
-                'potential_harm',
-                'aquatic',
-                'aquatic_desc',
-                'bees',
-                'bees_desc',
-                'earthworm',
-                'earthworm_desc',
-                'birds',
-                'birds_desc',
-                'leachability',
-                'leachability_desc',
-                'carcinogenicity',
-                'mutagenicity',
-                'edc',
-                'reproduction',
-                'ache',
-                'neurotoxicant',
-                'who_classification',
-                'eu_approved',
-            ]
-        ))->refresh();
+        $saved_item = $this->activeIngredients->create($request->only($this->columns_array))->refresh();
 
         $saved_item->agrochem()->saveMany(Agrochem::findMany($request->agrochems));
 
@@ -117,30 +117,7 @@ class ActiveIngredientsRepositoryMySqlImpl implements ActiveIngredientsRepositor
 
         $item = $this->activeIngredients->find($id);
         if($item){
-            $this->activeIngredients->find($id)->update($request->only(
-                [
-                    'name',
-                    'potential_harm',
-                    'aquatic',
-                    'aquatic_desc',
-                    'bees',
-                    'bees_desc',
-                    'earthworm',
-                    'earthworm_desc',
-                    'birds',
-                    'birds_desc',
-                    'leachability',
-                    'leachability_desc',
-                    'carcinogenicity',
-                    'mutagenicity',
-                    'edc',
-                    'reproduction',
-                    'ache',
-                    'neurotoxicant',
-                    'who_classification',
-                    'eu_approved',
-                ]
-            ));
+            $this->activeIngredients->find($id)->update($request->only($this->columns_array));
 
 
             $item->agrochem()->sync(Agrochem::findMany($request->agrochems));
@@ -166,29 +143,6 @@ class ActiveIngredientsRepositoryMySqlImpl implements ActiveIngredientsRepositor
         $request = $attributes["request"];
         $search_value = $request->search_value;
 
-        $columns_array = array (
-            'name',
-            'potential_harm',
-            'aquatic',
-            'aquatic_desc',
-            'bees',
-            'bees_desc',
-            'earthworm',
-            'earthworm_desc',
-            'birds',
-            'birds_desc',
-            'leachability',
-            'leachability_desc',
-            'carcinogenicity',
-            'mutagenicity',
-            'edc',
-            'reproduction',
-            'ache',
-            'neurotoxicant',
-            'who_classification',
-            'eu_approved',
-        );
-
         $data = ActiveIngredients::select('id');
 
         /**
@@ -198,11 +152,11 @@ class ActiveIngredientsRepositoryMySqlImpl implements ActiveIngredientsRepositor
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -211,7 +165,7 @@ class ActiveIngredientsRepositoryMySqlImpl implements ActiveIngredientsRepositor
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }
@@ -258,29 +212,6 @@ class ActiveIngredientsRepositoryMySqlImpl implements ActiveIngredientsRepositor
             $per_page=config('app.items_per_page');;
         }
 
-        $columns_array = array (
-            'name',
-            'potential_harm',
-            'aquatic',
-            'aquatic_desc',
-            'bees',
-            'bees_desc',
-            'earthworm',
-            'earthworm_desc',
-            'birds',
-            'birds_desc',
-            'leachability',
-            'leachability_desc',
-            'carcinogenicity',
-            'mutagenicity',
-            'edc',
-            'reproduction',
-            'ache',
-            'neurotoxicant',
-            'who_classification',
-            'eu_approved',
-        );
-
         $data = ActiveIngredients::select('id','name','image');
 
 
@@ -292,11 +223,11 @@ class ActiveIngredientsRepositoryMySqlImpl implements ActiveIngredientsRepositor
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -305,7 +236,7 @@ class ActiveIngredientsRepositoryMySqlImpl implements ActiveIngredientsRepositor
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }
@@ -345,29 +276,6 @@ class ActiveIngredientsRepositoryMySqlImpl implements ActiveIngredientsRepositor
             $per_page=config('app.items_per_page');;
         }
 
-        $columns_array = array (
-            'name',
-            'potential_harm',
-            'aquatic',
-            'aquatic_desc',
-            'bees',
-            'bees_desc',
-            'earthworm',
-            'earthworm_desc',
-            'birds',
-            'birds_desc',
-            'leachability',
-            'leachability_desc',
-            'carcinogenicity',
-            'mutagenicity',
-            'edc',
-            'reproduction',
-            'ache',
-            'neurotoxicant',
-            'who_classification',
-            'eu_approved',
-        );
-
         $data = ActiveIngredients::select();
 
 
@@ -379,11 +287,11 @@ class ActiveIngredientsRepositoryMySqlImpl implements ActiveIngredientsRepositor
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -392,7 +300,7 @@ class ActiveIngredientsRepositoryMySqlImpl implements ActiveIngredientsRepositor
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }

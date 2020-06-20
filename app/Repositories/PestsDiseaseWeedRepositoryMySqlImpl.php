@@ -22,26 +22,26 @@ class PestsDiseaseWeedRepositoryMySqlImpl implements  PestsDiseaseWeedRepository
 {
     protected  $pestsDiseaseWeed;
     protected  $imageService;
+    private $columns_array;
+
     public function __construct(PestsDiseaseWeed $pestsDiseaseWeed, ImageService $imageService)
     {
         $this->pestsDiseaseWeed = $pestsDiseaseWeed;
         $this->imageService = $imageService;
+        $this->columns_array = array (
+            'name',
+            'type',
+            'scientific_name',
+            'description_pest',
+            'description_impact',
+            'references',
+        );
     }
 
     public function create($attributes)
     {
         $request = $attributes['request'];
-        $saved_item = $this->pestsDiseaseWeed->create($request->only(
-            [
-                'name',
-                'type',
-                'scientific_name',
-                'crops_affected',
-                'description_pest',
-                'description_impact',
-                'references',
-            ]
-        ))->refresh();
+        $saved_item = $this->pestsDiseaseWeed->create($request->only($this->columns_array))->refresh();
 
         $saved_item->localNames()->saveMany(LocalNames::findMany($request->local_names));
         $saved_item->agrochemProducts()->saveMany(Agrochem::findMany($request->agrochem_products));
@@ -162,17 +162,7 @@ class PestsDiseaseWeedRepositoryMySqlImpl implements  PestsDiseaseWeedRepository
         $request = $attributes['request'];
         $item = $this->pestsDiseaseWeed->find($id);
         if($item){
-            $this->pestsDiseaseWeed->find($id)->update($request->only(
-                [
-                    'name',
-                    'type',
-                    'scientific_name',
-                    'crops_affected',
-                    'description_pest',
-                    'description_impact',
-                    'references',
-                ]
-            ));
+            $this->pestsDiseaseWeed->find($id)->update($request->only($this->columns_array));
 
             $item->localNames()->sync(LocalNames::findMany($request->local_names));
             $item->agrochemProducts()->sync(Agrochem::findMany($request->agrochem_products));
@@ -203,14 +193,6 @@ class PestsDiseaseWeedRepositoryMySqlImpl implements  PestsDiseaseWeedRepository
         $request = $attributes["request"];
         $search_value = $request->search_value;
 
-        $columns_array = array (
-            'name',
-            'type',
-            'scientific_name',
-            'description_pest',
-            'description_impact',
-            'references',
-        );
 
         $data = PestsDiseaseWeed::select('id');
 
@@ -221,11 +203,11 @@ class PestsDiseaseWeedRepositoryMySqlImpl implements  PestsDiseaseWeedRepository
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -236,7 +218,7 @@ class PestsDiseaseWeedRepositoryMySqlImpl implements  PestsDiseaseWeedRepository
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }
@@ -313,15 +295,6 @@ class PestsDiseaseWeedRepositoryMySqlImpl implements  PestsDiseaseWeedRepository
             $per_page=config('app.items_per_page');
         }
 
-        $columns_array = array (
-            'name',
-            'type',
-            'scientific_name',
-            'description_pest',
-            'description_impact',
-            'references',
-        );
-
         $data = PestsDiseaseWeed::select('id','name','image');
 
 
@@ -333,11 +306,11 @@ class PestsDiseaseWeedRepositoryMySqlImpl implements  PestsDiseaseWeedRepository
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -348,7 +321,7 @@ class PestsDiseaseWeedRepositoryMySqlImpl implements  PestsDiseaseWeedRepository
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }
@@ -384,15 +357,6 @@ class PestsDiseaseWeedRepositoryMySqlImpl implements  PestsDiseaseWeedRepository
             $per_page=config('app.items_per_page');
         }
 
-        $columns_array = array (
-            'name',
-            'type',
-            'scientific_name',
-            'description_pest',
-            'description_impact',
-            'references',
-        );
-
         $data = PestsDiseaseWeed::select();
 
 
@@ -404,11 +368,11 @@ class PestsDiseaseWeedRepositoryMySqlImpl implements  PestsDiseaseWeedRepository
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -419,7 +383,7 @@ class PestsDiseaseWeedRepositoryMySqlImpl implements  PestsDiseaseWeedRepository
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }

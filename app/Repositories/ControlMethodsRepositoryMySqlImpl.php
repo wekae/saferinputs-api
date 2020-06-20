@@ -13,22 +13,22 @@ use Illuminate\Database\Eloquent\Builder;
 class ControlMethodsRepositoryMySqlImpl implements ControlMethodsRepository
 {
     protected  $controlMethods;
+    private $columns_array;
     public function __construct(ControlMethods $controlMethods)
     {
         $this->controlMethods = $controlMethods;
+        $this->columns_array = array (
+            'name',
+            'category',
+            'options',
+            'external_links',
+        );
     }
 
     public function create($attributes)
     {
         $request = $attributes['request'];
-        $saved_item = $this->controlMethods->create($request->only(
-            [
-                'name',
-                'options',
-                'category',
-                'external_links',
-            ]
-        ))->refresh();
+        $saved_item = $this->controlMethods->create($request->only($this->columns_array))->refresh();
         $saved_item->commercialOrganic()->saveMany(CommercialOrganic::findMany($request->commercial_organic));
         $saved_item->pestsDiseaseWeeds()->saveMany(PestsDiseaseWeed::findMany($request->pests_diseases_weeds));
 
@@ -110,14 +110,7 @@ class ControlMethodsRepositoryMySqlImpl implements ControlMethodsRepository
         $request = $attributes['request'];
         $item = $this->controlMethods->find($id);
         if($item){
-            $this->controlMethods->find($id)->update($request->only(
-                [
-                    'name',
-                    'options',
-                    'category',
-                    'external_links',
-                ]
-            ));
+            $this->controlMethods->find($id)->update($request->only($this->columns_array));
 
             $item->commercialOrganic()->sync(CommercialOrganic::findMany($request->commercial_organic));
             $item->pestsDiseaseWeeds()->sync(PestsDiseaseWeed::findMany($request->pests_diseases_weeds));
@@ -148,13 +141,6 @@ class ControlMethodsRepositoryMySqlImpl implements ControlMethodsRepository
         $request = $attributes["request"];
         $search_value = $request->search_value;
 
-        $columns_array = array (
-            'name',
-            'category',
-            'options',
-            'external_links',
-        );
-
         $data = ControlMethods::select('id');
 
         /**
@@ -164,11 +150,11 @@ class ControlMethodsRepositoryMySqlImpl implements ControlMethodsRepository
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -177,7 +163,7 @@ class ControlMethodsRepositoryMySqlImpl implements ControlMethodsRepository
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }
@@ -229,13 +215,6 @@ class ControlMethodsRepositoryMySqlImpl implements ControlMethodsRepository
             $per_page=config('app.items_per_page');
         }
 
-        $columns_array = array (
-            'name',
-            'category',
-            'options',
-            'external_links',
-        );
-
         $data = ControlMethods::select('id','name','image')
             ->with(['pestsDiseaseWeeds' => function($query) {
                 $query->select('name');
@@ -250,11 +229,11 @@ class ControlMethodsRepositoryMySqlImpl implements ControlMethodsRepository
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -263,7 +242,7 @@ class ControlMethodsRepositoryMySqlImpl implements ControlMethodsRepository
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }
@@ -303,13 +282,6 @@ class ControlMethodsRepositoryMySqlImpl implements ControlMethodsRepository
             $per_page=config('app.items_per_page');
         }
 
-        $columns_array = array (
-            'name',
-            'category',
-            'options',
-            'external_links',
-        );
-
         $data = ControlMethods::select();
 
 
@@ -321,11 +293,11 @@ class ControlMethodsRepositoryMySqlImpl implements ControlMethodsRepository
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -334,7 +306,7 @@ class ControlMethodsRepositoryMySqlImpl implements ControlMethodsRepository
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }

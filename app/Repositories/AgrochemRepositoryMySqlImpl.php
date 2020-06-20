@@ -16,10 +16,22 @@ class AgrochemRepositoryMySqlImpl implements AgrochemRepository
 {
     protected  $agrochem;
     protected  $imageService;
+    private $columns_array;
     public function __construct(Agrochem $agrochem, ImageService $imageService)
     {
         $this->agrochem = $agrochem;
         $this->imageService = $imageService;
+        $this->columns_array = array (
+            'product_name',
+            'pcpb_number',
+            'distributing_company',
+            'toxic',
+            'who_class',
+            'composition',
+            'registrant',
+            'type',
+            'phi_days',
+        );
     }
 
     public function create($attributes)
@@ -173,19 +185,6 @@ class AgrochemRepositoryMySqlImpl implements AgrochemRepository
         $request = $attributes["request"];
         $search_value = $request->search_value;
 
-        $columns_array = array (
-            'product_name',
-            'pcpb_number',
-            'distributing_company',
-            'toxic',
-            'who_class',
-            'composition',
-            'registrant',
-            'type',
-            'phi_days',
-            'image'
-        );
-
         $data = Agrochem::select('id');
 
 
@@ -197,11 +196,11 @@ class AgrochemRepositoryMySqlImpl implements AgrochemRepository
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -210,7 +209,7 @@ class AgrochemRepositoryMySqlImpl implements AgrochemRepository
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }
@@ -267,19 +266,6 @@ class AgrochemRepositoryMySqlImpl implements AgrochemRepository
             $per_page=config('app.items_per_page');
         }
 
-        $columns_array = array (
-            'product_name',
-            'pcpb_number',
-            'distributing_company',
-            'toxic',
-            'who_class',
-            'composition',
-            'registrant',
-            'type',
-            'phi_days',
-            'image'
-        );
-
         $data = Agrochem::select('id','product_name','image');
 
 
@@ -291,11 +277,11 @@ class AgrochemRepositoryMySqlImpl implements AgrochemRepository
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -304,7 +290,7 @@ class AgrochemRepositoryMySqlImpl implements AgrochemRepository
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }
@@ -344,19 +330,6 @@ class AgrochemRepositoryMySqlImpl implements AgrochemRepository
             $per_page=config('app.items_per_page');
         }
 
-        $columns_array = array (
-            'product_name',
-            'pcpb_number',
-            'distributing_company',
-            'toxic',
-            'who_class',
-            'composition',
-            'registrant',
-            'type',
-            'phi_days',
-            'image'
-        );
-
         $data = Agrochem::select();
 
 
@@ -368,11 +341,11 @@ class AgrochemRepositoryMySqlImpl implements AgrochemRepository
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -381,7 +354,7 @@ class AgrochemRepositoryMySqlImpl implements AgrochemRepository
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }

@@ -18,21 +18,21 @@ class CropsRepositoryMysqlImpl implements CropsRepository
 {
     protected  $crops;
     protected  $imageService;
+    private $columns_array;
     public function __construct(Crops $crops, ImageService $imageService)
     {
         $this->crops = $crops;
         $this->imageService = $imageService;
+        $this->columns_array = array (
+            'name'
+        );
     }
 
     public function create($attributes)
     {
         try{
             $request = $attributes['request'];
-            $data = $this->crops->create($request->only(
-                [
-                    'name',
-                ]
-            ))->refresh();
+            $data = $this->crops->create($request->only($this->columns_array))->refresh();
 
             $data->pestsDiseaseWeed()->saveMany(PestsDiseaseWeed::findMany($request->pests_disease_weed));
             $data->agrochem()->saveMany(Agrochem::findMany($request->agrochems));
@@ -130,11 +130,7 @@ class CropsRepositoryMysqlImpl implements CropsRepository
         $item = $this->crops->find($id);
 
         if($item){
-            $item->update($request->only(
-                [
-                    'name',
-                ]
-            ));
+            $item->update($request->only($this->columns_array));
             $item->agrochem()->sync(Agrochem::findMany($request->agrochems));
             $item->pestsDiseaseWeed()->sync(PestsDiseaseWeed::findMany($request->pests_disease_weed));
 
@@ -160,10 +156,6 @@ class CropsRepositoryMysqlImpl implements CropsRepository
         $request = $attributes["request"];
         $search_value = $request->search_value;
 
-        $columns_array = array (
-            'name'
-        );
-
         $data = Crops::select('id');
 
         /**
@@ -173,11 +165,11 @@ class CropsRepositoryMysqlImpl implements CropsRepository
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -186,7 +178,7 @@ class CropsRepositoryMysqlImpl implements CropsRepository
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }
@@ -238,10 +230,6 @@ class CropsRepositoryMysqlImpl implements CropsRepository
             $per_page=config('app.items_per_page');
         }
 
-        $columns_array = array (
-            'name'
-        );
-
         $data = Crops::select('id','name','image');
 
 
@@ -253,11 +241,11 @@ class CropsRepositoryMysqlImpl implements CropsRepository
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -266,7 +254,7 @@ class CropsRepositoryMysqlImpl implements CropsRepository
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }
@@ -305,10 +293,6 @@ class CropsRepositoryMysqlImpl implements CropsRepository
             $per_page=config('app.items_per_page');
         }
 
-        $columns_array = array (
-            'name'
-        );
-
         $data = Crops::select();
 
 
@@ -320,11 +304,11 @@ class CropsRepositoryMysqlImpl implements CropsRepository
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -333,7 +317,7 @@ class CropsRepositoryMysqlImpl implements CropsRepository
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }

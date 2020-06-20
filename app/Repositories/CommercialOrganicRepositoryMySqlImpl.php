@@ -16,27 +16,27 @@ class CommercialOrganicRepositoryMySqlImpl implements CommercialOrganicRepositor
 {
     protected  $commercialOrganic;
     protected  $imageService;
+    private $columns_array;
     public function __construct(CommercialOrganic $commercialOrganic, ImageService $imageService)
     {
         $this->commercialOrganic = $commercialOrganic;
         $this->imageService = $imageService;
+        $this->columns_array = array (
+            'name',
+            'pcpb_number',
+            'manufacturer',
+            'distributor',
+            'category',
+            'contact_details',
+            'external_links',
+            'application_details',
+        );
     }
 
     public function create($attributes)
     {
         $request = $attributes['request'];
-        $saved_item = $this->commercialOrganic->create($request->only(
-            [
-                'name',
-                'pcpb_number',
-                'manufacturer',
-                'distributor',
-                'category',
-                'contact_details',
-                'external_links',
-                'application_details',
-            ]
-        ))->refresh();
+        $saved_item = $this->commercialOrganic->create($request->only($this->columns_array))->refresh();
 
         $saved_item->pestsDiseaseWeed()->saveMany(PestsDiseaseWeed::findMany($request->pests_disease_weed));
         $saved_item->controlMethods()->saveMany(ControlMethods::findMany($request->control_methods));
@@ -117,18 +117,7 @@ class CommercialOrganicRepositoryMySqlImpl implements CommercialOrganicRepositor
         $request = $attributes['request'];
         $item = $this->commercialOrganic->find($id);
         if($item){
-            $this->commercialOrganic->find($id)->update($request->only(
-                [
-                    'name',
-                    'pcpb_number',
-                    'manufacturer',
-                    'distributor',
-                    'category',
-                    'contact_details',
-                    'external_links',
-                    'application_details',
-                ]
-            ));
+            $this->commercialOrganic->find($id)->update($request->only($this->columns_array));
             $item->pestsDiseaseWeed()->sync(PestsDiseaseWeed::findMany($request->pests_disease_weed));
             $item->controlMethods()->sync(ControlMethods::findMany($request->control_methods));
 
@@ -153,17 +142,6 @@ class CommercialOrganicRepositoryMySqlImpl implements CommercialOrganicRepositor
         $request = $attributes["request"];
         $search_value = $request->search_value;
 
-        $columns_array = array (
-            'name',
-            'pcpb_number',
-            'manufacturer',
-            'distributor',
-            'category',
-            'contact_details',
-            'external_links',
-            'application_details',
-        );
-
         $data = CommercialOrganic::select('id');
 
         /**
@@ -173,11 +151,11 @@ class CommercialOrganicRepositoryMySqlImpl implements CommercialOrganicRepositor
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -186,7 +164,7 @@ class CommercialOrganicRepositoryMySqlImpl implements CommercialOrganicRepositor
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }
@@ -238,17 +216,6 @@ class CommercialOrganicRepositoryMySqlImpl implements CommercialOrganicRepositor
             $per_page=config('app.items_per_page');
         }
 
-        $columns_array = array (
-            'name',
-            'pcpb_number',
-            'manufacturer',
-            'distributor',
-            'category',
-            'contact_details',
-            'external_links',
-            'application_details',
-        );
-
         $data = CommercialOrganic::select('id','name','image')
             ->with(['pestsDiseaseWeed' => function($query) {
                 $query->select('name');
@@ -263,11 +230,11 @@ class CommercialOrganicRepositoryMySqlImpl implements CommercialOrganicRepositor
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -276,7 +243,7 @@ class CommercialOrganicRepositoryMySqlImpl implements CommercialOrganicRepositor
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }
@@ -315,17 +282,6 @@ class CommercialOrganicRepositoryMySqlImpl implements CommercialOrganicRepositor
             $per_page=config('app.items_per_page');
         }
 
-        $columns_array = array (
-            'name',
-            'pcpb_number',
-            'manufacturer',
-            'distributor',
-            'category',
-            'contact_details',
-            'external_links',
-            'application_details',
-        );
-
         $data = CommercialOrganic::select();
 
 
@@ -337,11 +293,11 @@ class CommercialOrganicRepositoryMySqlImpl implements CommercialOrganicRepositor
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -350,7 +306,7 @@ class CommercialOrganicRepositoryMySqlImpl implements CommercialOrganicRepositor
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }

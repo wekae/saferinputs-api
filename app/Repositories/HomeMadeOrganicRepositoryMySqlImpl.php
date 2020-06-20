@@ -14,23 +14,23 @@ class HomeMadeOrganicRepositoryMySqlImpl implements HomeMadeOrganicRepository
 {
     protected  $homeMadeOrganic;
     protected  $imageService;
+    private $columns_array;
     public function __construct(HomeMadeOrganic $homeMadeOrganic, ImageService $imageService)
     {
         $this->homeMadeOrganic = $homeMadeOrganic;
         $this->imageService = $imageService;
+        $this->columns_array = array (
+            'name',
+            'practices',
+            'external_links',
+            'references',
+        );
     }
 
     public function create($attributes)
     {
         $request = $attributes['request'];
-        $saved_item = $this->homeMadeOrganic->create($request->only(
-            [
-                'name',
-                'practices',
-                'external_links',
-                'references',
-            ]
-        ))->refresh();
+        $saved_item = $this->homeMadeOrganic->create($request->only($this->columns_array))->refresh();
 
         $saved_item->pestsDiseaseWeed()->saveMany(PestsDiseaseWeed::findMany($request->pests_diseases_weeds));
 
@@ -104,14 +104,7 @@ class HomeMadeOrganicRepositoryMySqlImpl implements HomeMadeOrganicRepository
         $request = $attributes['request'];
         $item = $this->homeMadeOrganic->find($id);
         if($item){
-            $this->homeMadeOrganic->find($id)->update($request->only(
-                [
-                    'name',
-                    'practices',
-                    'external_links',
-                    'references'
-                ]
-            ));
+            $this->homeMadeOrganic->find($id)->update($request->only($this->columns_array));
 
             $item->pestsDiseaseWeed()->sync(PestsDiseaseWeed::findMany($request->pests_diseases_weeds));
 
@@ -137,13 +130,6 @@ class HomeMadeOrganicRepositoryMySqlImpl implements HomeMadeOrganicRepository
         $request = $attributes["request"];
         $search_value = $request->search_value;
 
-        $columns_array = array (
-            'name',
-            'practices',
-            'external_links',
-            'references',
-        );
-
         $data = HomeMadeOrganic::select('id');
 
         /**
@@ -153,11 +139,11 @@ class HomeMadeOrganicRepositoryMySqlImpl implements HomeMadeOrganicRepository
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -166,7 +152,7 @@ class HomeMadeOrganicRepositoryMySqlImpl implements HomeMadeOrganicRepository
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }
@@ -213,13 +199,6 @@ class HomeMadeOrganicRepositoryMySqlImpl implements HomeMadeOrganicRepository
             $per_page=config('app.items_per_page');
         }
 
-        $columns_array = array (
-            'name',
-            'practices',
-            'external_links',
-            'references',
-        );
-
         $data = HomeMadeOrganic::select('id','name','image')
             ->with(['pestsDiseaseWeed' => function($query) {
                 $query->select('name');
@@ -234,11 +213,11 @@ class HomeMadeOrganicRepositoryMySqlImpl implements HomeMadeOrganicRepository
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -247,7 +226,7 @@ class HomeMadeOrganicRepositoryMySqlImpl implements HomeMadeOrganicRepository
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }
@@ -286,13 +265,6 @@ class HomeMadeOrganicRepositoryMySqlImpl implements HomeMadeOrganicRepository
             $per_page=config('app.items_per_page');
         }
 
-        $columns_array = array (
-            'name',
-            'practices',
-            'external_links',
-            'references',
-        );
-
         $data = HomeMadeOrganic::select();
 
 
@@ -304,11 +276,11 @@ class HomeMadeOrganicRepositoryMySqlImpl implements HomeMadeOrganicRepository
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -317,7 +289,7 @@ class HomeMadeOrganicRepositoryMySqlImpl implements HomeMadeOrganicRepository
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }

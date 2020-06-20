@@ -13,23 +13,23 @@ use League\Flysystem\Adapter\Local;
 class LocalNamesRepositoryMySqlImpl implements LocalNamesRepository
 {
     protected  $localNames;
+    private $columns_array;
     public function __construct(LocalNames $localNames)
     {
         $this->localNames = $localNames;
+        $this->columns_array = array (
+            'language_ethnic_group',
+            'english_name',
+            'local_name',
+            'category',
+            'region',
+        );
     }
 
     public function create($attributes)
     {
         $request = $attributes['request'];
-        $saved_item = $this->localNames->create($request->only(
-            [
-                'language_ethnic_group',
-                'english_name',
-                'local_name',
-                'category',
-                'region',
-            ]
-        ))->refresh();
+        $saved_item = $this->localNames->create($request->only($this->columns_array))->refresh();
 
         $saved_item->pestsDiseaseWeed()->saveMany(PestsDiseaseWeed::findMany($request->pests_diseases_weeds));
 
@@ -101,15 +101,7 @@ class LocalNamesRepositoryMySqlImpl implements LocalNamesRepository
         $request = $attributes['request'];
         $item = $this->localNames->find($id);
         if($item){
-            $this->localNames->find($id)->update($request->only(
-                [
-                    'language_ethnic_group',
-                    'english_name',
-                    'local_name',
-                    'category',
-                    'region',
-                ]
-            ));
+            $this->localNames->find($id)->update($request->only($this->columns_array));
 
             $item->pestsDiseaseWeed()->sync(PestsDiseaseWeed::findMany($request->pests_diseases_weeds));
 
@@ -134,14 +126,6 @@ class LocalNamesRepositoryMySqlImpl implements LocalNamesRepository
         $request = $attributes["request"];
         $search_value = $request->search_value;
 
-        $columns_array = array (
-            'language_ethnic_group',
-            'english_name',
-            'local_name',
-            'category',
-            'region',
-        );
-
         $data = LocalNames::select('id');
 
         /**
@@ -151,11 +135,11 @@ class LocalNamesRepositoryMySqlImpl implements LocalNamesRepository
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -164,7 +148,7 @@ class LocalNamesRepositoryMySqlImpl implements LocalNamesRepository
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }
@@ -211,14 +195,6 @@ class LocalNamesRepositoryMySqlImpl implements LocalNamesRepository
             $per_page=config('app.items_per_page');
         }
 
-        $columns_array = array (
-            'language_ethnic_group',
-            'english_name',
-            'local_name',
-            'category',
-            'region',
-        );
-
         $data = LocalNames::select('id','english_name', 'local_name', 'language_ethnic_group', 'region');
 
 
@@ -230,11 +206,11 @@ class LocalNamesRepositoryMySqlImpl implements LocalNamesRepository
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -243,7 +219,7 @@ class LocalNamesRepositoryMySqlImpl implements LocalNamesRepository
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }
@@ -282,14 +258,6 @@ class LocalNamesRepositoryMySqlImpl implements LocalNamesRepository
             $per_page=config('app.items_per_page');
         }
 
-        $columns_array = array (
-            'language_ethnic_group',
-            'english_name',
-            'local_name',
-            'category',
-            'region',
-        );
-
         $data = LocalNames::select();
 
 
@@ -301,11 +269,11 @@ class LocalNamesRepositoryMySqlImpl implements LocalNamesRepository
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -314,7 +282,7 @@ class LocalNamesRepositoryMySqlImpl implements LocalNamesRepository
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }

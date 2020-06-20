@@ -12,22 +12,22 @@ use Illuminate\Database\Eloquent\Builder;
 class GapRepositoryMySqlImpl implements GapRepository
 {
     protected  $gap;
+    private $columns_array;
     public function __construct(Gap $gap)
     {
         $this->gap = $gap;
+        $this->columns_array = array(
+            'name',
+            'category',
+            'practices',
+            'references',
+        );
     }
 
     public function create($attributes)
     {
         $request = $attributes['request'];
-        $saved_item = $this->gap->create($request->only(
-            [
-                'name',
-                'category',
-                'practices',
-                'references',
-            ]
-        ))->refresh();
+        $saved_item = $this->gap->create($request->only($this->columns_array))->refresh();
 
         $saved_item->pestsDiseaseWeed()->saveMany(PestsDiseaseWeed::findMany($request->pests_diseases_weeds));
 
@@ -101,14 +101,7 @@ class GapRepositoryMySqlImpl implements GapRepository
         $request = $attributes['request'];
         $item = $this->gap->find($id);
         if($item){
-            $this->gap->find($id)->update($request->only(
-                [
-                    'name',
-                    'category',
-                    'practices',
-                    'references',
-                ]
-            ));
+            $this->gap->find($id)->update($request->only($this->columns_array));
 
             $item->pestsDiseaseWeed()->sync(PestsDiseaseWeed::findMany($request->pests_diseases_weeds));
 
@@ -133,13 +126,6 @@ class GapRepositoryMySqlImpl implements GapRepository
         $request = $attributes["request"];
         $search_value = $request->search_value;
 
-        $columns_array = array (
-            'name',
-            'category',
-            'practices',
-            'references',
-        );
-
         $data = Gap::select('id');
 
         /**
@@ -149,11 +135,11 @@ class GapRepositoryMySqlImpl implements GapRepository
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -162,7 +148,7 @@ class GapRepositoryMySqlImpl implements GapRepository
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }
@@ -209,13 +195,6 @@ class GapRepositoryMySqlImpl implements GapRepository
             $per_page=config('app.items_per_page');
         }
 
-        $columns_array = array (
-            'name',
-            'category',
-            'practices',
-            'references',
-        );
-
         $data = Gap::select('id','name','image')
             ->with(['pestsDiseaseWeed' => function($query) {
                 $query->select('name');
@@ -230,11 +209,11 @@ class GapRepositoryMySqlImpl implements GapRepository
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -243,7 +222,7 @@ class GapRepositoryMySqlImpl implements GapRepository
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }
@@ -282,13 +261,6 @@ class GapRepositoryMySqlImpl implements GapRepository
             $per_page=config('app.items_per_page');
         }
 
-        $columns_array = array (
-            'name',
-            'category',
-            'practices',
-            'references',
-        );
-
         $data = Gap::select();
 
 
@@ -300,11 +272,11 @@ class GapRepositoryMySqlImpl implements GapRepository
             /**
              * create a nested OR clause to search by specific column
              */
-            $data = $data->where(function ($query) use ($columns_array, $search_value, $request) {
+            $data = $data->where(function ($query) use ($search_value, $request) {
                 /**
                  * append each table column to the query
                  */
-                foreach ($columns_array as $column) {
+                foreach ($this->columns_array as $column) {
                     $query->orWhere($column, 'like', '%' . $search_value . '%');
                 }
             });
@@ -313,7 +285,7 @@ class GapRepositoryMySqlImpl implements GapRepository
             /*
              * Search spefific columns
              */
-            foreach ($request->all() as $key => $value){
+            foreach ($request->only($this->columns_array) as $key => $value){
                 $data = $data->where($key,'like', '%'.$value.'%');
             }
 //        }
