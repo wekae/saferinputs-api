@@ -5,12 +5,14 @@ namespace App\Repositories;
 
 
 use App\Facades\UtilsFacade;
+use App\Http\Resources\AgrochemCollection;
 use App\Models\ActiveIngredients;
 use App\Models\Agrochem;
 use App\Models\Crops;
 use App\Models\PestsDiseaseWeed;
 use App\Services\ImageService;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 class AgrochemRepositoryMySqlImpl implements AgrochemRepository
 {
@@ -210,7 +212,12 @@ class AgrochemRepositoryMySqlImpl implements AgrochemRepository
              * Search spefific columns
              */
             foreach ($request->only($this->columns_array) as $key => $value){
-                $data = $data->where($key,'like', '%'.$value.'%');
+                if($key=="toxic"){
+                    $toxic = UtilsFacade::formatToBinary($value);
+                    $data = $data->where($key,'like', '%'.$toxic.'%');
+                }else{
+                    $data = $data->where($key,'like', '%'.$value.'%');
+                }
             }
 //        }
 
@@ -291,7 +298,12 @@ class AgrochemRepositoryMySqlImpl implements AgrochemRepository
              * Search spefific columns
              */
             foreach ($request->only($this->columns_array) as $key => $value){
-                $data = $data->where($key,'like', '%'.$value.'%');
+                if($key=="toxic"){
+                    $toxic = UtilsFacade::formatToBinary($value);
+                    $data = $data->where($key,'like', '%'.$toxic.'%');
+                }else{
+                    $data = $data->where($key,'like', '%'.$value.'%');
+                }
             }
 //        }
 
@@ -310,6 +322,72 @@ class AgrochemRepositoryMySqlImpl implements AgrochemRepository
          */
         $data = $data->paginate($per_page);
         return $data;
+    }
+    public function summaryNamesByCrops(array $attributes){
+        $request = $attributes["request"];
+        $data = $this->getSummaryNamesByRelation("crops", $request);
+        return $data;
+    }
+    public function summaryNamesByPestsDiseaseWeed(array $attributes){
+        $request = $attributes["request"];
+        $data = $this->getSummaryNamesByRelation("pestsDiseaseWeed", $request);
+        return $data;
+    }
+    public function summaryNamesByActiveIngredients(array $attributes){
+        $request = $attributes["request"];
+        $data = $this->getSummaryNamesByRelation("activeIngredients", $request);
+        return $data;
+    }
+    private function getSummaryNamesByRelation($relation, $request){
+
+        $exempt_columns = array(
+            'id',
+            'page',
+            'per_page',
+            'order_column',
+            'order_direction'
+        );
+
+        try{
+            $order_column = $request->order_column;
+            $order_direction = $request->order_direction;
+            $per_page = $request->per_page;
+
+            if($order_column==null){
+                $order_column="id";
+            }
+            if($order_direction==null){
+                $order_direction="desc";
+            }
+            if($per_page==null){
+                $per_page=config('app.items_per_page');
+            }
+
+            $data = Agrochem::select('id','product_name','image')->whereHas($relation, function (Builder $query) use ($request, $exempt_columns){
+                foreach ($request->except($exempt_columns) as $key => $value){
+                    if($key=="toxic"){
+                        $toxic = UtilsFacade::formatToBinary($value);
+                        $query = $query->where($key,'like', '%'.$toxic.'%');
+                    }else{
+                        $query = $query->where($key,'like', '%'.$value.'%');
+                    }
+                }
+            });
+            /**
+             * Set ordering
+             */
+            $data = $data->orderBy($order_column, $order_direction);
+
+            /**
+             * Get the filtered records
+             */
+            $data = $data->paginate($per_page);
+//
+            return $data;
+        }catch(\Exception $e){
+//            Log::info($e, [$this]);
+            return new Collection();
+        }
     }
 
 
@@ -355,7 +433,12 @@ class AgrochemRepositoryMySqlImpl implements AgrochemRepository
              * Search spefific columns
              */
             foreach ($request->only($this->columns_array) as $key => $value){
-                $data = $data->where($key,'like', '%'.$value.'%');
+                if($key=="toxic"){
+                    $toxic = UtilsFacade::formatToBinary($value);
+                    $data = $data->where($key,'like', '%'.$toxic.'%');
+                }else{
+                    $data = $data->where($key,'like', '%'.$value.'%');
+                }
             }
 //        }
 
@@ -374,6 +457,74 @@ class AgrochemRepositoryMySqlImpl implements AgrochemRepository
          */
         $data = $data->paginate($per_page);
         return $data;
+    }
+
+
+    public function filterByCrops(array $attributes){
+        $request = $attributes["request"];
+        $data = $this->getFilterItemsByRelation("crops", $request);
+        return $data;
+    }
+    public function filterByPestsDiseaseWeed(array $attributes){
+        $request = $attributes["request"];
+        $data = $this->getFilterItemsByRelation("pestsDiseaseWeed", $request);
+        return $data;
+    }
+    public function filterByActiveIngredients(array $attributes){
+        $request = $attributes["request"];
+        $data = $this->getFilterItemsByRelation("activeIngredients", $request);
+        return $data;
+    }
+    private function getFilterItemsByRelation($relation, $request){
+
+        $exempt_columns = array(
+          'id',
+          'page',
+          'per_page',
+          'order_column',
+          'order_direction'
+        );
+
+        try{
+            $order_column = $request->order_column;
+            $order_direction = $request->order_direction;
+            $per_page = $request->per_page;
+
+            if($order_column==null){
+                $order_column="id";
+            }
+            if($order_direction==null){
+                $order_direction="desc";
+            }
+            if($per_page==null){
+                $per_page=config('app.items_per_page');
+            }
+
+            $data = Agrochem::whereHas($relation, function (Builder $query) use ($request, $exempt_columns){
+                foreach ($request->except($exempt_columns) as $key => $value){
+                    if($key=="toxic"){
+                        $toxic = UtilsFacade::formatToBinary($value);
+                        $query = $query->where($key,'like', '%'.$toxic.'%');
+                    }else{
+                        $query = $query->where($key,'like', '%'.$value.'%');
+                    }
+                }
+            });
+            /**
+             * Set ordering
+             */
+            $data = $data->orderBy($order_column, $order_direction);
+
+            /**
+             * Get the filtered records
+             */
+            $data = $data->paginate($per_page);
+//
+            return $data;
+        }catch(\Exception $e){
+//            Log::info($e, [$this]);
+            return new Collection();
+        }
     }
 
     public function datatable(array $attributes)

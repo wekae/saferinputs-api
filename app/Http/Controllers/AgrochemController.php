@@ -270,6 +270,42 @@ class AgrochemController extends Controller
             return response($response, $status_code);
         }
     }
+    public function filterByActiveIngredients(Request $request){
+        $items = $this->agrochemService->filterByActiveIngredients($request);
+
+        if($items->count()>0){
+            return AgrochemResource::collection($items);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Items not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+    public function filterByCrops(Request $request){
+        $items = $this->agrochemService->filterByCrops($request);
+
+        if($items->count()>0){
+            return AgrochemResource::collection($items);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Items not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+    public function filterByPestsDiseaseWeed(Request $request){
+        $items = $this->agrochemService->filterByPestsDiseaseWeed($request);
+
+        if($items->count()>0){
+            return AgrochemResource::collection($items);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Items not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
 
     /**
      * Performs aggregations on agrochem records based on query parameter values
@@ -340,8 +376,51 @@ class AgrochemController extends Controller
      */
     public function summaryNames(Request $request){
         $items = $this->agrochemService->summaryNames($request);
-
-
+        //Implementation without relationships
+        if($items->count()>0){
+            $message = $items->count()." Items found";
+            $status_code = $this->successStatus;
+            $response =  $items;
+            return response($response, $status_code);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Items not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+    public function summaryNamesByActiveIngredients(Request $request){
+        $items = $this->agrochemService->summaryNamesByActiveIngredients($request);
+        //Implementation without relationships
+        if($items->count()>0){
+            $message = $items->count()." Items found";
+            $status_code = $this->successStatus;
+            $response =  $items;
+            return response($response, $status_code);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Items not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+    public function summaryNamesByCrops(Request $request){
+        $items = $this->agrochemService->summaryNamesByCrops($request);
+        //Implementation without relationships
+        if($items->count()>0){
+            $message = $items->count()." Items found";
+            $status_code = $this->successStatus;
+            $response =  $items;
+            return response($response, $status_code);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Items not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+    public function summaryNamesByPestsDiseaseWeed(Request $request){
+        $items = $this->agrochemService->summaryNamesByPestsDiseaseWeed($request);
         //Implementation without relationships
         if($items->count()>0){
             $message = $items->count()." Items found";
