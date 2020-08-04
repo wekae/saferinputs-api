@@ -85,6 +85,27 @@ class CommercialOrganicRepositoryMySqlImpl implements CommercialOrganicRepositor
 
         return $items;
     }
+    public function findAgrochemProducts($attributes){
+        $request = $attributes['request'];
+
+        $items = $this->findRelationItemsForCommercialOrganicPdw("agrochemProducts", $request);
+
+        return $items;
+    }
+    public function findGap($attributes){
+        $request = $attributes['request'];
+
+        $items = $this->findRelationItemsForCommercialOrganicPdw("gap", $request);
+
+        return $items;
+    }
+    public function findHomemadeOrganic($attributes){
+        $request = $attributes['request'];
+
+        $items = $this->findRelationItemsForCommercialOrganicPdw("homemadeOrganic", $request);
+
+        return $items;
+    }
     private function findRelationItems($relation, $request){
 
         try{
@@ -104,6 +125,40 @@ class CommercialOrganicRepositoryMySqlImpl implements CommercialOrganicRepositor
             return null;
         }
     }
+    private function findRelationItemsForCommercialOrganicPdw($relation, $request){
+
+        $commercial_organic = $this->commercialOrganic->find($request->id);
+        $pests_diseases_weeds = $commercial_organic->pestsDiseaseWeed;
+        $items = array();
+        $total = 0;
+        foreach ($pests_diseases_weeds as $pdw){
+            try{
+                $item = PestsDiseaseWeed::with([$relation => function($query) use($request){
+                    foreach ($request->except('id') as $key => $value){
+                        if($key=="toxic"){
+                            $query = $query->where($key,UtilsFacade::formatToBinary($value));
+                        }else{
+                            $query = $query->where($key,'like', '%'.$value.'%');
+                        }
+                    }
+                }])->where('id',$pdw->id)->firstOrFail();
+
+                if(count($item[$relation]) > 0){
+                    ++$total;
+                }
+
+                array_push($items, $item);
+            }catch(\Exception $e){
+//            Log::info($e, [$this]);
+                return null;
+            }
+        }
+        return array(
+            "total"=> $total,
+            "items"=>$items
+        );
+    }
+
 
     public function getCommercialOrganicNames(){
         return $this->commercialOrganic->select('id','name')->orderBy('name', 'asc')

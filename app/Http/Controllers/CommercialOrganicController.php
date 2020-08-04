@@ -131,6 +131,54 @@ class CommercialOrganicController extends Controller
             return response($response, $status_code);
         }
     }
+    public function findAgrochemProducts(Request $request){
+        $item = $this->commercialOrganicService->findAgrochemProducts($request);
+        if($item){
+//            return $item;
+            return response()->json(
+                [
+                    'total'=>$item["total"],
+                    'data'=>$item["items"]
+                ], $this->successStatus);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Item not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+    public function findGap(Request $request){
+        $item = $this->commercialOrganicService->findGap($request);
+        if($item){
+//            return $item;
+            return response()->json(
+                [
+                    'total'=>$item["total"],
+                    'data'=>$item["items"]
+                ], $this->successStatus);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Item not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+    public function findHomemadeOrganic(Request $request){
+        $item = $this->commercialOrganicService->findHomemadeOrganic($request);
+        if($item){
+//            return $item;
+            return response()->json(
+                [
+                    'total'=>$item["total"],
+                    'data'=>$item["items"]
+                ], $this->successStatus);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Item not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
 
     public function getCommercialOrganicNames(){
         $items = $this->commercialOrganicService->getCommercialOrganicNames();

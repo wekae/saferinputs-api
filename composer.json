@@ -15,14 +15,18 @@
         "doctrine/dbal": "^2.10",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
+        "goldspecdigital/laravel-eloquent-uuid": "7.0",
         "guzzlehttp/guzzle": "^6.3",
         "intervention/image": "^2.5",
         "intervention/imagecache": "^2.4",
         "laravel/framework": "^7.0",
+        "laravel/helpers": "^1.2",
+        "laravel/passport": "^9.2",
         "laravel/scout": "^8.0",
         "laravel/tinker": "^2.0",
         "mongodb/mongodb": "^1.6",
-        "spatie/laravel-searchable": "^1.6"
+        "spatie/laravel-searchable": "^1.6",
+        "symfony/psr-http-message-bridge": "^2.0"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

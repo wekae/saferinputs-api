@@ -34,6 +34,18 @@ class CommercialOrganicService
         $attributes = array("request"=>$request);
         return $this->commercialOrganicRepository->findControlMethods($attributes);
     }
+    public function findAgrochemProducts(Request $request){
+        $attributes = array("request"=>$request);
+        return $this->commercialOrganicRepository->findAgrochemProducts($attributes);
+    }
+    public function findGap(Request $request){
+        $attributes = array("request"=>$request);
+        return $this->commercialOrganicRepository->findGap($attributes);
+    }
+    public function findHomemadeOrganic(Request $request){
+        $attributes = array("request"=>$request);
+        return $this->commercialOrganicRepository->findHomemadeOrganic($attributes);
+    }
 
     public function getCommercialOrganicNames()
     {

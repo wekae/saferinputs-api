@@ -29,6 +29,18 @@ class AgrochemService
         $attributes = array("request"=>$request);
         return $this->agrochemRepository->findCrops($attributes);
     }
+    public function findCommercialOrganic($request){
+        $attributes = array("request"=>$request);
+        return $this->agrochemRepository->findCommercialOrganic($attributes);
+    }
+    public function findHomemadeOrganic($request){
+        $attributes = array("request"=>$request);
+        return $this->agrochemRepository->findHomemadeOrganic($attributes);
+    }
+    public function findGap($request){
+        $attributes = array("request"=>$request);
+        return $this->agrochemRepository->findGap($attributes);
+    }
     public function findActiveIngredients($request){
         $attributes = array("request"=>$request);
         return $this->agrochemRepository->findActiveIngredients($attributes);

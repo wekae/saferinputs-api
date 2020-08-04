@@ -21,6 +21,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+//        \App\Http\Middleware\Json::class,
 //        \App\Http\Middleware\Cors::class,
 
     ];
@@ -35,15 +36,18 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
-            // \Illuminate\Session\Middleware\AuthenticateSession::class,
+            \Illuminate\Session\Middleware\AuthenticateSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+//            \App\Http\Middleware\VerifyCsrfToken::class,
+            \Laravel\Passport\Http\Middleware\CreateFreshApiToken::class,
         ],
 
         'api' => [
             'throttle:180,1',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \Fruitcake\Cors\HandleCors::class,
+            \App\Http\Middleware\Json::class,
 //            \App\Http\Middleware\Cors::class,
         ],
     ];
@@ -66,5 +70,25 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'client' => \Laravel\Passport\Http\Middleware\CheckClientCredentials::class,
+        'api.superAdmin' => \App\Http\Middleware\AccessLevels\SuperAdminAuth::class,
+        'api.editor' => \App\Http\Middleware\AccessLevels\EditorAuth::class,
+        'api.author' => \App\Http\Middleware\AccessLevels\AuthorAuth::class,
+        'api.thirdParty' => \App\Http\Middleware\AccessLevels\ThirdPartyAuth::class,
+        'return-json' => \App\Http\Middleware\Json::class,
+    ];
+
+
+
+    protected $middlewarePriority = [
+        \App\Http\Middleware\CheckForMaintenanceMode::class, #changed
+        \App\Http\Middleware\Json::class,
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests::class,
+        \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        \Illuminate\Session\Middleware\AuthenticateSession::class,
+        \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        \Illuminate\Auth\Middleware\Authorize::class
     ];
 }

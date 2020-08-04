@@ -150,6 +150,75 @@ class ActiveIngredientsController extends Controller
     }
 
     /**
+     * Find commercial organic items based on the active ingredient id and column values provided by query params
+     * Returns response as JSON
+     * @param Request $request
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function findCommercialOrganic(Request $request){
+        $item = $this->activeIngredientsService->findCommercialOrganic($request);
+        if($item){
+//            return $item;
+            return response()->json(
+                [
+                    'total'=>$item["total"],
+                    'data'=>$item["items"]
+                ], $this->successStatus);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Item not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+
+    /**
+     * Find homemade organic items based on the active ingredient id and column values provided by query params
+     * Returns response as JSON
+     * @param Request $request
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function findHomemadeOrganic(Request $request){
+        $item = $this->activeIngredientsService->findHomemadeOrganic($request);
+        if($item){
+//            return $item;
+            return response()->json(
+                [
+                    'total'=>$item["total"],
+                    'data'=>$item["items"]
+                ], $this->successStatus);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Item not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+
+    /**
+     * Find gap items based on the active ingredient id and column values provided by query params
+     * Returns response as JSON
+     * @param Request $request
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function findGap(Request $request){
+        $item = $this->activeIngredientsService->findGap($request);
+        if($item){
+//            return $item;
+            return response()->json(
+                [
+                    'total'=>$item["total"],
+                    'data'=>$item["items"]
+                ], $this->successStatus);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Item not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+
+    /**
      * Adds a new active ingredient item to database
      * @param ActiveIngredientsRequest $request
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response

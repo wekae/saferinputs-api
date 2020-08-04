@@ -34,6 +34,18 @@ class CropsService
         $attributes = array("request"=>$request);
         return $this->cropsRepository->findAgrochems($attributes);
     }
+    public function findCommercialOrganic($request){
+        $attributes = array("request"=>$request);
+        return $this->cropsRepository->findCommercialOrganic($attributes);
+    }
+    public function findHomemadeOrganic($request){
+        $attributes = array("request"=>$request);
+        return $this->cropsRepository->findHomemadeOrganic($attributes);
+    }
+    public function findGap($request){
+        $attributes = array("request"=>$request);
+        return $this->cropsRepository->findGap($attributes);
+    }
 
     public function getCropNames(){
         return $this->cropsRepository->getCropNames();

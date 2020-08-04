@@ -32,6 +32,21 @@ class ActiveIngredientsService
         return $this->activeIngredientsRepository->findAgrochems($attributes);
     }
 
+    public function findCommercialOrganic(Request $request){
+        $attributes = array("request"=>$request);
+        return $this->activeIngredientsRepository->findCommercialOrganic($attributes);
+    }
+
+    public function findHomemadeOrganic(Request $request){
+        $attributes = array("request"=>$request);
+        return $this->activeIngredientsRepository->findHomemadeOrganic($attributes);
+    }
+
+    public function findGap(Request $request){
+        $attributes = array("request"=>$request);
+        return $this->activeIngredientsRepository->findGap($attributes);
+    }
+
     public function getActiveIngredientNames(){
         return $this->activeIngredientsRepository->getActiveIngredientNames();
     }

@@ -150,6 +150,75 @@ class AgrochemController extends Controller
     }
 
     /**
+     * Find commercial organic items based on the agrochem product id
+     * Returns response as JSON
+     * @param $id
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function findCommercialOrganic(Request $request){
+        $item = $this->agrochemService->findCommercialOrganic($request);
+        if($item){
+//            return $item;
+            return response()->json(
+                [
+                    'total'=>$item["total"],
+                    'data'=>$item["items"]
+                ], $this->successStatus);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Item not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+
+    /**
+     * Find homemade organic items based on the agrochem product id
+     * Returns response as JSON
+     * @param $id
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function findHomemadeOrganic(Request $request){
+        $item = $this->agrochemService->findHomemadeOrganic($request);
+        if($item){
+//            return $item;
+            return response()->json(
+                [
+                    'total'=>$item["total"],
+                    'data'=>$item["items"]
+                ], $this->successStatus);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Item not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+
+    /**
+     * Find gap items based on the agrochem product id
+     * Returns response as JSON
+     * @param $id
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function findGap(Request $request){
+        $item = $this->agrochemService->findGap($request);
+        if($item){
+//            return $item;
+            return response()->json(
+                [
+                    'total'=>$item["total"],
+                    'data'=>$item["items"]
+                ], $this->successStatus);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "Item not found";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+        }
+    }
+
+    /**
      * Find active ingredients based on the agrochem product id
      * Returns response as JSON
      * @param $id

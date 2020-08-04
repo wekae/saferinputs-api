@@ -7,6 +7,7 @@ namespace App\Repositories;
 use App\Facades\UtilsFacade;
 use App\Models\ActiveIngredients;
 use App\Models\Agrochem;
+use App\Models\PestsDiseaseWeed;
 use Illuminate\Database\Eloquent\Builder;
 
 class ActiveIngredientsRepositoryMySqlImpl implements ActiveIngredientsRepository
@@ -87,6 +88,27 @@ class ActiveIngredientsRepositoryMySqlImpl implements ActiveIngredientsRepositor
 
         return $items;
     }
+    public function findCommercialOrganic($attributes){
+        $request = $attributes['request'];
+
+        $items = $this->findRelationItemsForActiveIngredientPdw("commercialOrganic", $request);
+
+        return $items;
+    }
+    public function findGap($attributes){
+        $request = $attributes['request'];
+
+        $items = $this->findRelationItemsForActiveIngredientPdw("gap", $request);
+
+        return $items;
+    }
+    public function findHomemadeOrganic($attributes){
+        $request = $attributes['request'];
+
+        $items = $this->findRelationItemsForActiveIngredientPdw("homemadeOrganic", $request);
+
+        return $items;
+    }
     private function findRelationItems($relation, $request){
 
         try{
@@ -105,6 +127,53 @@ class ActiveIngredientsRepositoryMySqlImpl implements ActiveIngredientsRepositor
 //            Log::info($e, [$this]);
             return null;
         }
+    }
+    private function findRelationItemsForActiveIngredientPdw($relation, $request){
+
+        $active_ingredient = $this->activeIngredients->find($request->id);
+        $agrochem_products = $active_ingredient->agrochem;
+        $items = array();
+        $total = 0;
+        foreach ($agrochem_products as $agrochem){
+            $pests_diseases_weeds = $agrochem->pestsDiseaseWeed;
+            foreach ($pests_diseases_weeds as $pdw){
+                try{
+                    $item = PestsDiseaseWeed::with([$relation => function($query) use($request){
+                        foreach ($request->except('id') as $key => $value){
+                            if($key=="toxic"){
+                                $query = $query->where($key,UtilsFacade::formatToBinary($value));
+                            }else{
+                                $query = $query->where($key,'like', '%'.$value.'%');
+                            }
+                        }
+                    }])->where('id',$pdw->id)->firstOrFail();
+
+
+                    if(count($item[$relation]) > 0 && !$this->existsInArray($items, $item)){
+                        ++$total;
+                        array_push($items, $item);
+                    }
+                }catch(\Exception $e){
+//            Log::info($e, [$this]);
+                    return null;
+                }
+            }
+        }
+        return array(
+            "total"=> $total,
+            "items"=>$items
+        );
+    }
+    public function existsInArray($array, $entry)
+    {
+        $exists = false;
+        foreach ($array as $compare) {
+            if ($compare['id'] == $entry['id']) {
+                $exists = true;
+            }
+        }
+
+        return $exists;
     }
 
     public function getActiveIngredientNames(){

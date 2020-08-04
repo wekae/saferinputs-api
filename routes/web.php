@@ -14,7 +14,27 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', array('uses'=>'InitController@index'));
+// ADMIN ROUTES
+Route::get('/login', array('uses'=>'web\AdminController@login'))->name('login');
+Route::get('/logout', array('uses' => 'web\AdminController@webLogout'));
+Route::post('/auth', array('uses' => 'web\AdminController@webLogin'));
+//Authenticated User's Clients
+
+Route::middleware(['auth:web', 'api.superAdmin'])->group(function () {
+    Route::get('/clients', array('uses' => 'web\AdminController@clients'));
+    Route::get('/authorized_clients', array('uses' => 'web\AdminController@authorizedClients'));
+    Route::get('/personal_access_tokens', array('uses' => 'web\AdminController@personalAccessTokens'));
+});
+Route::middleware(['auth:web', 'api.author'])->group(function () {
+    Route::get('/', array('uses' => 'web\AdminController@home'));
+});
+// --/ADMIN ROUTES
+
+
+
+
+
+//Route::get('/', array('uses'=>'InitController@index'));
 
 //Clear Cache facade value:
 Route::get('/clear-cache', array('uses'=>'InitController@clearCache'));

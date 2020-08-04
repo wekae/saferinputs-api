@@ -215,7 +215,7 @@ class ControlMethodsRepositoryMySqlImpl implements ControlMethodsRepository
             $per_page=config('app.items_per_page');
         }
 
-        $data = ControlMethods::select('id','name','image')
+        $data = ControlMethods::select('id','name','category','image')
             ->with(['pestsDiseaseWeeds' => function($query) {
                 $query->select('name');
             }]);

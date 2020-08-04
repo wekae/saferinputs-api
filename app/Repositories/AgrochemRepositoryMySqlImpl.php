@@ -114,6 +114,27 @@ class AgrochemRepositoryMySqlImpl implements AgrochemRepository
 
         return $items;
     }
+    public function findCommercialOrganic($attributes){
+        $request = $attributes['request'];
+
+        $items = $this->findRelationItemsForAgrochemPdw("commercialOrganic", $request);
+
+        return $items;
+    }
+    public function findGap($attributes){
+        $request = $attributes['request'];
+
+        $items = $this->findRelationItemsForAgrochemPdw("gap", $request);
+
+        return $items;
+    }
+    public function findHomemadeOrganic($attributes){
+        $request = $attributes['request'];
+
+        $items = $this->findRelationItemsForAgrochemPdw("homemadeOrganic", $request);
+
+        return $items;
+    }
     private function findRelationItems($relation, $request){
 
         try{
@@ -132,6 +153,39 @@ class AgrochemRepositoryMySqlImpl implements AgrochemRepository
 //            Log::info($e, [$this]);
             return null;
         }
+    }
+    private function findRelationItemsForAgrochemPdw($relation, $request){
+
+        $agrochem = $this->agrochem->find($request->id);
+        $pests_diseases_weeds = $agrochem->pestsDiseaseWeed;
+        $items = array();
+        $total = 0;
+        foreach ($pests_diseases_weeds as $pdw){
+            try{
+                $item = PestsDiseaseWeed::with([$relation => function($query) use($request){
+                    foreach ($request->except('id') as $key => $value){
+                        if($key=="toxic"){
+                            $query = $query->where($key,UtilsFacade::formatToBinary($value));
+                        }else{
+                            $query = $query->where($key,'like', '%'.$value.'%');
+                        }
+                    }
+                }])->where('id',$pdw->id)->firstOrFail();
+
+                if(count($item[$relation]) > 0){
+                    ++$total;
+                }
+
+                array_push($items, $item);
+            }catch(\Exception $e){
+//            Log::info($e, [$this]);
+                return null;
+            }
+        }
+        return array(
+            "total"=> $total,
+            "items"=>$items
+        );
     }
 
     public function getAgrochemNames(){
