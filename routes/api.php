@@ -62,11 +62,12 @@ Route::get('search_alt/{value}',array('uses'=>'SearchController@searchAlt'));
 
 //PestsDiseaseWeed Routes
 Route::middleware(['auth:api', 'api.editor'])->group(function () {
+});
     Route::post('pdw',array('uses'=>'PestsDiseaseWeedController@new'));
     Route::post('pdw/{id}/image',array('uses'=>'ImagesController@updateImage'));
     Route::put('pdw/{id}',array('uses'=>'PestsDiseaseWeedController@update'));
     Route::delete('pdw/{id}',array('uses'=>'PestsDiseaseWeedController@delete'));
-});
+
 Route::get('pdw',array('uses'=>'PestsDiseaseWeedController@all'));
 Route::get('pdw/datatable',array('uses'=>'PestsDiseaseWeedController@dataTable'));
 Route::get('pdw/filter',array('uses'=>'PestsDiseaseWeedController@filter'));

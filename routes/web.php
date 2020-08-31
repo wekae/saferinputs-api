@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/login', array('uses'=>'web\AdminController@login'))->name('login');
 Route::get('/logout', array('uses' => 'web\AdminController@webLogout'));
 Route::post('/auth', array('uses' => 'web\AdminController@webLogin'));
-//Authenticated User's Clients
 
 Route::middleware(['auth:web', 'api.superAdmin'])->group(function () {
+    //Authenticated User's Clients
     Route::get('/clients', array('uses' => 'web\AdminController@clients'));
     Route::get('/authorized_clients', array('uses' => 'web\AdminController@authorizedClients'));
     Route::get('/personal_access_tokens', array('uses' => 'web\AdminController@personalAccessTokens'));
@@ -30,6 +30,11 @@ Route::middleware(['auth:web', 'api.author'])->group(function () {
 });
 // --/ADMIN ROUTES
 
+
+
+// Download Routes
+Route::get('/downloads/pdw', array('uses' => 'DownloadsController@allPestsDiseaseWeeds'));
+// --/Download Routes
 
 
 

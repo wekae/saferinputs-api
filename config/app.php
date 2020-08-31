@@ -184,6 +184,11 @@ return [
         Intervention\Image\ImageServiceProvider::class,
 //        Laravel\Passport\PassportServiceProvider::class,
 
+        /*
+         * Package Service Providers...
+         */
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+
     ],
 
     /*
@@ -237,6 +242,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'UtilsFacade' => App\Facades\UtilsFacade::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
     ],
 
