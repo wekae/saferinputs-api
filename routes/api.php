@@ -20,12 +20,13 @@ use Illuminate\Support\Facades\Route;
 
 
 // Auth routes
-Route::middleware(['auth:api', 'api.editor'])->group(function () {
     Route::post('/register', array('uses'=>'AuthController@register','name'=>'register'));
+Route::middleware(['auth:api', 'api.editor'])->group(function () {
     Route::delete('/delete', array('uses'=>'AuthController@delete'));
     Route::put('/update/password', array('uses'=>'AuthController@updatePassword'));
     Route::put('/update', array('uses'=>'AuthController@update'));
 });
+Route::get('/auth/signup/activate/{token}', array('uses'=>'AuthController@signupActivate','name'=>'signupActivate'));
 Route::post('/login', array('uses'=>'AuthController@login'));
 Route::post('/subscribe', array('uses'=>'AuthController@register','name'=>'register'));
 Route::get('/logout', array('uses'=>'AuthController@delete'))->name('logout');

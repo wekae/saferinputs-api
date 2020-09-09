@@ -18,6 +18,9 @@ class UpdateUsersTableToIncludeType extends Migration
             $table->integer('access_level')->after('type')->nullable();
             $table->string('koan_users_id')->after('access_level')->nullable();
             $table->string('third_party_users_id')->after('koan_users_id')->nullable();
+            $table->boolean('active')->default(false);
+            $table->string('activation_token');
+            $table->softDeletes();
         });
     }
 

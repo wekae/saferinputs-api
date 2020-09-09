@@ -1,6 +1,7 @@
-<html lang="en">
+{{--<html lang="en">--}}
+<html lang="{{app()->getLocale()}}">
 <head>
-    <title>Safe Inputs API -  @yield('title')</title>
+    <title>Safer Inputs API -  @yield('title')</title>
     @component('layouts.app.header')
 
     @endcomponent

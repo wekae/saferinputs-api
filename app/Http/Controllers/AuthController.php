@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\AuthService;
+use App\User;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
@@ -224,5 +225,25 @@ class AuthController extends Controller
             return response($response, $status_code);
         }
 
+    }
+
+    public function signupActivate(Request $request){
+        $token = $request->token;
+
+        $returnData = $this->authService->signupActivate($token);
+        $success = $returnData['success'];
+        if($success){
+            $status_code = $this->successStatus;
+            $message = "Account Activated";
+            $payload = $returnData["data"];
+            $response = $this->successMessage($status_code, $message, $payload);
+            return response($response, $status_code);
+        }else{
+            $status_code = $this->notFoundStatus;
+            $message = "This activation token is invalid.";
+            $response = $this->failureMessage($status_code, $message);
+            return response($response, $status_code);
+
+        }
     }
 }

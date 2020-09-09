@@ -20,5 +20,5 @@
 {{--<link rel="stylesheet" href="https://unpkg.com/@coreui/icons@2.0.0-beta.3/css/brand.min.css">--}}
 {{--<link rel="stylesheet" href="https://unpkg.com/@coreui/icons@2.0.0-beta.3/css/flag.min.css">--}}
 
-<link rel="stylesheet" href="{{ asset('/css/coreui.css') }}">
-<link rel="stylesheet" href="{{ asset('/css/app.css') }}">
+<link rel="stylesheet" href="{{ asset('css/coreui.css') }}">
+<link rel="stylesheet" href="{{ asset('css/app.css') }}">

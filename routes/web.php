@@ -25,9 +25,14 @@ Route::middleware(['auth:web', 'api.superAdmin'])->group(function () {
     Route::get('/authorized_clients', array('uses' => 'web\AdminController@authorizedClients'));
     Route::get('/personal_access_tokens', array('uses' => 'web\AdminController@personalAccessTokens'));
 });
+Route::get('/users/new', array('uses' => 'web\UsersController@newUser'));
+Route::post('/users/new', array('uses' => 'web\UsersController@createUser'));
+
+
 Route::middleware(['auth:web', 'api.author'])->group(function () {
     Route::get('/', array('uses' => 'web\AdminController@home'));
 });
+
 // --/ADMIN ROUTES
 
 

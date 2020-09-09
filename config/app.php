@@ -256,5 +256,9 @@ return [
     */
 
     'items_per_page' => env('ITEMS_PER_PAGE',15),
+    'mail_from_name' => env('MAIL_FROM_NAME',"Laravel"),
+    'base_url' => env('BASE_URL',"http://localhost:9000/"),
+
+
 
 ];

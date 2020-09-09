@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Models\Users\KoanUsers;
 use App\Models\Users\ThirdPartyUsers;
+use App\Notifications\SignupActivate;
 use App\Repositories\AuthRepository;
 use App\Repositories\AuthRepositoryMysqlImpl;
 use App\User;
@@ -35,10 +36,18 @@ class AuthService
         if ($request->is('api/subscribe')) {
             $return_data = $this->authRepository->createThirdPartyUser($attributes);
         }
+        if ($request->is('users/new')) {
+            $return_data = $this->authRepository->createKoanUser($attributes);
+        }
 
         if($return_data['success']){
             //User has been registered
             $accessToken = $return_data['user']->createToken('accessToken')->accessToken;
+
+            // Send confirmation email
+            //TODO Reactivate On Deployment
+//            $return_data['user']->notify(new SignupActivate($return_data['user']));
+
             $return_data['access_token'] = $accessToken;
             return $return_data;
         }else{
@@ -83,6 +92,10 @@ class AuthService
 
 
 //        if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
+        $credentials["email"] = $request->email;
+        $credentials["password"] = $request->password;
+        $credentials["active"] = 1;
+        $credentials["deleted_at"] = null;
         if (Auth::attempt($loginData)) {
             $oClient = OClient::where('password_client', 1)->first();
             if($oClient){
@@ -129,7 +142,7 @@ class AuthService
         $http = new Client;
 
         try {
-            $response = $http->request('POST', env('BASE_URL').'oauth/token', [
+            $response = $http->request('POST', config('app.base_url').'oauth/token', [
                 'form_params' => [
                     'grant_type' => 'refresh_token',
                     'refresh_token' => $refresh_token,
@@ -148,7 +161,8 @@ class AuthService
     private function getTokenAndRefreshToken(OClient $oClient, $email, $password) {
 //        $oClient = OClient::where('password_client', 1)->first();
         $http = new Client();
-        $response = $http->post(env('BASE_URL').'oauth/token', [
+//        $response = $http->post(env('BASE_URL').'oauth/token', [
+        $response = $http->post(config('app.base_url').'oauth/token', [
             'form_params' => [
                 'grant_type' => 'password',
                 'client_id' => $oClient->id,
@@ -163,6 +177,27 @@ class AuthService
         $result = json_decode((string) $response->getBody(), true);
         return $result;
 //        return response()->json($result, $this->successStatus);
+    }
+
+    public function signupActivate($token){
+        $user = User::where('activation_token', $token)->first();
+
+        if(!$user){
+            return array(
+              "success" => false
+            );
+        }else{
+            $user->active = true;
+            $user->activation_token = '';
+            $user->save();
+            $user->refresh();
+
+            return array(
+                "success" => true,
+                "data" => $user
+            );
+        }
+
     }
 
 }

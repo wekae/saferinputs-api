@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Models\Users\KoanUsers;
 use App\Models\Users\ThirdPartyUsers;
+use App\Notifications\SignupActivate;
 use App\User;
 use Illuminate\Database\QueryException;
 
@@ -52,7 +53,8 @@ class AuthRepositoryMysqlImpl implements AuthRepository
                 "email" => $validatedData['email'],
                 "password" => $validatedData['password'],
                 "type" => "koan_user",
-                "access_level" => $validatedData['access_level']
+                "access_level" => $validatedData['access_level'],
+                "activation_token" => str_random(60)
             );
 
             $koanUserData = array(
@@ -121,6 +123,7 @@ class AuthRepositoryMysqlImpl implements AuthRepository
                 "password" => $validatedData['password'],
                 "type" => "third_party_user",
                 'access_level' => 20,
+                "activation_token" => str_random(60)
             );
 
             $thirdPartyUserData = array(
