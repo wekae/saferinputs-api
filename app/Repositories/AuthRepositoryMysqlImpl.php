@@ -8,6 +8,7 @@ use App\Models\Users\KoanUsers;
 use App\Models\Users\ThirdPartyUsers;
 use App\Notifications\SignupActivate;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 
 class AuthRepositoryMysqlImpl implements AuthRepository
@@ -213,6 +214,32 @@ class AuthRepositoryMysqlImpl implements AuthRepository
         }
     }
 
+    public function signupActivate(array $attributes){
+
+        $request = $attributes["request"];
+
+        $token = $request->token;
+
+        $user = User::where('activation_token', $token)->first();
+
+        if(!$user){
+            return array(
+                "success" => false
+            );
+        }else{
+            $user->active = true;
+            $user->activation_token = '';
+            $user->email_verified_at=Carbon::now()->toDateTimeString();
+            $user->save();
+            $user->refresh();
+
+            return array(
+                "success" => true,
+                "data" => $user
+            );
+        }
+    }
+
     public function delete($id)
     {
         $item = $this->user->find($id);
@@ -223,5 +250,4 @@ class AuthRepositoryMysqlImpl implements AuthRepository
             return false;
         }
     }
-
 }

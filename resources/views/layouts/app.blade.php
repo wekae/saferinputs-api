@@ -3,7 +3,6 @@
 <head>
     <title>Safer Inputs API -  @yield('title')</title>
     @component('layouts.app.header')
-
     @endcomponent
 </head>
 <body class="c-app">

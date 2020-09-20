@@ -4,6 +4,7 @@ namespace App\Models\Users;
 
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class KoanUsers extends Model
 {
@@ -15,7 +16,7 @@ class KoanUsers extends Model
      */
     protected $table = 'koan_users';
 
-    use Uuid;
+    use Uuid, SoftDeletes;
     protected $keyType = 'string';
     public $incrementing = false;
     protected $guarded = [];

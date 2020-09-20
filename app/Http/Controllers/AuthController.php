@@ -122,7 +122,7 @@ class AuthController extends Controller
         }else{
 //            $status_code = $this->unauthorizedStatus;
             $status_code = 422;
-            $message = "Incorrect username/password";
+            $message = $return_data["message"];
             $response = $this->failureMessage($status_code, $message);
             return response($response, $status_code);
         }
@@ -228,21 +228,35 @@ class AuthController extends Controller
     }
 
     public function signupActivate(Request $request){
-        $token = $request->token;
 
-        $returnData = $this->authService->signupActivate($token);
+        $returnData = $this->authService->signupActivate($request);
         $success = $returnData['success'];
         if($success){
-            $status_code = $this->successStatus;
-            $message = "Account Activated";
-            $payload = $returnData["data"];
-            $response = $this->successMessage($status_code, $message, $payload);
-            return response($response, $status_code);
+//            $status_code = $this->successStatus;
+//            $message = "Account Activated";
+//            $payload = $returnData["data"];
+//            $response = $this->successMessage($status_code, $message, $payload);
+//            return response($response, $status_code);
+
+            $data = array(
+                "title" => "Account Activated",
+                "message" => "Visit the link below to login.",
+                "url" => config("app.base_url")
+            );
+            return view('users.account-activation')
+                ->with($data);
         }else{
-            $status_code = $this->notFoundStatus;
-            $message = "This activation token is invalid.";
-            $response = $this->failureMessage($status_code, $message);
-            return response($response, $status_code);
+//            $status_code = $this->notFoundStatus;
+//            $message = "This activation token is invalid.";
+//            $response = $this->failureMessage($status_code, $message);
+//            return response($response, $status_code);
+
+            $data = array(
+                "title" => "Invalid Token.",
+                "message" => "This activation token is invalid."
+            );
+            return view('users.account-activation')
+                ->with($data);
 
         }
     }

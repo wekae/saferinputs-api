@@ -10,6 +10,7 @@ use App\Notifications\SignupActivate;
 use App\Repositories\AuthRepository;
 use App\Repositories\AuthRepositoryMysqlImpl;
 use App\User;
+use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -96,7 +97,7 @@ class AuthService
         $credentials["password"] = $request->password;
         $credentials["active"] = 1;
         $credentials["deleted_at"] = null;
-        if (Auth::attempt($loginData)) {
+        if (Auth::attempt($credentials)) {
             $oClient = OClient::where('password_client', 1)->first();
             if($oClient){
                 $accessToken = $this->getTokenAndRefreshToken($oClient, request('email'), request('password'));
@@ -106,9 +107,19 @@ class AuthService
 
         }
         else {
+
+            $accountStatus = $this->getUserStatus($request->email);
+            // Handle response if account has been deactivated
+            if($accountStatus['exists'] && $accountStatus["active"] === false){
+                return array(
+                    'login' => false,
+                    'message' => 'Your account has been deactivated. Contact the administrator for more information.'
+                );
+            }
+
             return array(
                 'login' => false,
-                'message' => 'Invalid Credentials'
+                'message' => 'Incorrect username/password provided.'
             );
         }
 
@@ -179,25 +190,34 @@ class AuthService
 //        return response()->json($result, $this->successStatus);
     }
 
-    public function signupActivate($token){
-        $user = User::where('activation_token', $token)->first();
+    public function signupActivate(Request $request){
 
-        if(!$user){
-            return array(
-              "success" => false
-            );
+        $attributes = array("request"=>$request);
+        return $this->authRepository->signupActivate($attributes);
+
+    }
+
+
+    private function getUserStatus($email){
+        $user = User::where('email', $email)->first();
+        if($user){
+            if($user->active === 0){
+                return array(
+                  "exists" => true,
+                  "active" =>false,
+                );
+            }else{
+                return array(
+                    "exists" => true,
+                    "active" => true,
+                );
+            }
         }else{
-            $user->active = true;
-            $user->activation_token = '';
-            $user->save();
-            $user->refresh();
-
             return array(
-                "success" => true,
-                "data" => $user
+                "exists" => false,
+                "active" =>false,
             );
         }
-
     }
 
 }

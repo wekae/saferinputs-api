@@ -29,8 +29,8 @@ class AdminController extends Controller
         }else{
             $data = array(
                 "message_type" => "danger",
-                "title" => "Incorrect Username/Password",
-                "message" => "Incorrect Username/Password Provided"
+                "title" => "Something went wrong",
+                "message" => $return_data["message"]
             );
             return redirect('login')
                 ->with($data);

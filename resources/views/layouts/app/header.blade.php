@@ -1,3 +1,5 @@
+@section('header')
+
 <meta charset="utf-8">
 <meta http-equiv="x-ua-compatible" content="ie=edge">
 <meta name="csrf-token" content="{{ csrf_token() }}" />
@@ -22,3 +24,6 @@
 
 <link rel="stylesheet" href="{{ asset('css/coreui.css') }}">
 <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+{{--<link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">--}}
+
+@show

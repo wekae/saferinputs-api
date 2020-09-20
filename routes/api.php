@@ -19,13 +19,115 @@ use Illuminate\Support\Facades\Route;
 //});
 
 
-// Auth routes
+
+/**
+ * Routes accessible only to super admin
+ */
+Route::middleware(['auth:api', 'api.superAdmin'])->group(function () {
+    // Auth Routes
     Route::post('/register', array('uses'=>'AuthController@register','name'=>'register'));
-Route::middleware(['auth:api', 'api.editor'])->group(function () {
+    Route::get('/users/datatable', array('uses'=>'web\UsersController@datatable'));
     Route::delete('/delete', array('uses'=>'AuthController@delete'));
+    // --/Auth Routes
+});
+/**
+ * --/Routes accessible only to super admin
+ */
+
+
+/**
+ * Routes accessible super admin and editor
+ */
+Route::middleware(['auth:api', 'api.editor'])->group(function () {
     Route::put('/update/password', array('uses'=>'AuthController@updatePassword'));
     Route::put('/update', array('uses'=>'AuthController@update'));
 });
+/**
+ * --/Routes accessible super admin and editor
+ */
+
+
+/**
+ * Routes accessible super admin, editor and author
+ */
+Route::middleware(['auth:api', 'api.author'])->group(function () {
+
+    //PestsDiseaseWeed Routes
+    Route::post('pdw',array('uses'=>'PestsDiseaseWeedController@new'));
+    Route::post('pdw/{id}/image',array('uses'=>'ImagesController@updateImage'));
+    Route::put('pdw/{id}',array('uses'=>'PestsDiseaseWeedController@update'));
+    Route::delete('pdw/{id}',array('uses'=>'PestsDiseaseWeedController@delete'));
+    //--/PestsDiseaseWeed Routes
+
+    //ActiveIngredients Routes
+    Route::post('active_ingredients',array('uses'=>'ActiveIngredientsController@new'));
+    Route::post('active_ingredients/{id}/image',array('uses'=>'ImagesController@updateImage'));
+    Route::put('active_ingredients/{id}',array('uses'=>'ActiveIngredientsController@update'));
+    Route::delete('active_ingredients/{id}',array('uses'=>'ActiveIngredientsController@delete'));
+    //--/ActiveIngredients Routes
+
+    //Agrochem Routes
+    Route::post('agrochem',array('uses'=>'AgrochemController@new'));
+    Route::post('agrochem/{id}/image',array('uses'=>'ImagesController@updateImage'));
+    Route::put('agrochem/{id}',array('uses'=>'AgrochemController@update'));
+    Route::delete('agrochem/{id}',array('uses'=>'AgrochemController@delete'));
+    //--/Agrochem Routes
+
+    //CommercialOrganic Routes
+    Route::post('commercial_organic',array('uses'=>'CommercialOrganicController@new'));
+    Route::post('commercial_organic/{id}/image',array('uses'=>'ImagesController@updateImage'));
+    Route::put('commercial_organic/{id}',array('uses'=>'CommercialOrganicController@update'));
+    Route::delete('commercial_organic/{id}',array('uses'=>'CommercialOrganicController@delete'));
+    //--/CommercialOrganic Routes
+
+    //GAP Routes
+    Route::post('gap',array('uses'=>'GapController@new'));
+    Route::post('gap/{id}/image',array('uses'=>'ImagesController@updateImage'));
+    Route::put('gap/{id}',array('uses'=>'GapController@update'));
+    Route::delete('gap/{id}',array('uses'=>'GapController@delete'));
+    //--/GAP Routes
+
+    //HomeMadeOrganic Routes
+    Route::post('homemade_organic',array('uses'=>'HomeMadeOrganicController@new'));
+    Route::post('homemade_organic/{id}/image',array('uses'=>'ImagesController@updateImage'));
+    Route::put('homemade_organic/{id}',array('uses'=>'HomeMadeOrganicController@update'));
+    Route::delete('homemade_organic/{id}',array('uses'=>'HomeMadeOrganicController@delete'));
+    //--/HomeMadeOrganic Routes
+
+    //LocalNames Routes
+    Route::post('local_names',array('uses'=>'LocalNamesController@new'));
+    Route::post('local_names/{id}/image',array('uses'=>'ImagesController@updateImage'));
+    Route::put('local_names/{id}',array('uses'=>'LocalNamesController@update'));
+    Route::delete('local_names/{id}',array('uses'=>'LocalNamesController@delete'));
+    //--/LocalNames Routes
+
+    //Crops Routes
+    Route::post('crops',array('uses'=>'CropsController@new'));
+    Route::post('crops/{id}/image/',array('uses'=>'ImagesController@updateImage'));
+    Route::put('crops/{id}',array('uses'=>'CropsController@update'));
+    Route::delete('crops/{id}',array('uses'=>'CropsController@delete'));
+    //--/Crops Routes
+
+    //CommercialOrganic Routes
+    Route::post('control_methods',array('uses'=>'ControlMethodsController@new'));
+    Route::post('control_methods/{id}/image/',array('uses'=>'ImagesController@updateImage'));
+    Route::put('control_methods/{id}',array('uses'=>'ControlMethodsController@update'));
+    Route::delete('control_methods/{id}',array('uses'=>'ControlMethodsController@delete'));
+    //--/CommercialOrganic Routes
+
+    //Images Routes
+    Route::post('image',array('uses'=>'ImagesController@upload'));
+    //--/Images Routes
+
+});
+/**
+ * --/Routes accessible super admin, editor and author
+ */
+
+
+/**
+ * Public Routes
+ */
 Route::get('/auth/signup/activate/{token}', array('uses'=>'AuthController@signupActivate','name'=>'signupActivate'));
 Route::post('/login', array('uses'=>'AuthController@login'));
 Route::post('/subscribe', array('uses'=>'AuthController@register','name'=>'register'));
@@ -34,7 +136,6 @@ Route::get('/logout', array('uses'=>'AuthController@delete'))->name('logout');
 
 Route::get('test/filter/{search_value}',array('uses'=>'ImagesController@test'));
 Route::get('test/filter/',array('uses'=>'ImagesController@test'));
-
 
 
 
@@ -59,16 +160,10 @@ Route::get('search',array('uses'=>'SearchController@search'));
 Route::get('search/',array('uses'=>'SearchController@search'));
 Route::get('search_alt',array('uses'=>'SearchController@searchAlt'));
 Route::get('search_alt/{value}',array('uses'=>'SearchController@searchAlt'));
+//--/Search Routes
 
 
 //PestsDiseaseWeed Routes
-Route::middleware(['auth:api', 'api.editor'])->group(function () {
-});
-    Route::post('pdw',array('uses'=>'PestsDiseaseWeedController@new'));
-    Route::post('pdw/{id}/image',array('uses'=>'ImagesController@updateImage'));
-    Route::put('pdw/{id}',array('uses'=>'PestsDiseaseWeedController@update'));
-    Route::delete('pdw/{id}',array('uses'=>'PestsDiseaseWeedController@delete'));
-
 Route::get('pdw',array('uses'=>'PestsDiseaseWeedController@all'));
 Route::get('pdw/datatable',array('uses'=>'PestsDiseaseWeedController@dataTable'));
 Route::get('pdw/filter',array('uses'=>'PestsDiseaseWeedController@filter'));
@@ -93,15 +188,10 @@ Route::get('pdw/{id}/gap',array('uses'=>'PestsDiseaseWeedController@findGap'));
 Route::get('pdw/{id}/homemade_organic',array('uses'=>'PestsDiseaseWeedController@findHomemadeOrganic'));
 Route::get('pdw/{id}/local_names',array('uses'=>'PestsDiseaseWeedController@findLocalNames'));
 Route::get('pdw/{id}',array('uses'=>'PestsDiseaseWeedController@find'));
+//--/PestsDiseaseWeed Routes
 
 
 //ActiveIngredients Routes
-Route::middleware(['auth:api', 'api.editor'])->group(function () {
-    Route::post('active_ingredients',array('uses'=>'ActiveIngredientsController@new'));
-    Route::post('active_ingredients/{id}/image',array('uses'=>'ImagesController@updateImage'));
-    Route::put('active_ingredients/{id}',array('uses'=>'ActiveIngredientsController@update'));
-    Route::delete('active_ingredients/{id}',array('uses'=>'ActiveIngredientsController@delete'));
-});
 Route::get('active_ingredients',array('uses'=>'ActiveIngredientsController@all'));
 Route::get('active_ingredients/filter',array('uses'=>'ActiveIngredientsController@filter'));
 Route::get('active_ingredients/filter/{search_value}',array('uses'=>'ActiveIngredientsController@filter'));
@@ -117,14 +207,10 @@ Route::get('active_ingredients/{id}/commercial_organic',array('uses'=>'ActiveIng
 Route::get('active_ingredients/{id}/gap',array('uses'=>'ActiveIngredientsController@findGap'));
 Route::get('active_ingredients/{id}/homemade_organic',array('uses'=>'ActiveIngredientsController@findHomemadeOrganic'));
 Route::get('active_ingredients/{id}',array('uses'=>'ActiveIngredientsController@find'));
+//--/ActiveIngredients Routes
+
 
 //Agrochem Routes
-Route::middleware(['auth:api', 'api.editor'])->group(function () {
-    Route::post('agrochem',array('uses'=>'AgrochemController@new'));
-    Route::post('agrochem/{id}/image',array('uses'=>'ImagesController@updateImage'));
-    Route::put('agrochem/{id}',array('uses'=>'AgrochemController@update'));
-    Route::delete('agrochem/{id}',array('uses'=>'AgrochemController@delete'));
-});
 Route::get('agrochem',array('uses'=>'AgrochemController@all'));
 Route::get('agrochem/filter/active_ingredients',array('uses'=>'AgrochemController@filterByActiveIngredients'));
 Route::get('agrochem/filter/crops',array('uses'=>'AgrochemController@filterByCrops'));
@@ -150,16 +236,10 @@ Route::get('agrochem/{id}/homemade_organic',array('uses'=>'AgrochemController@fi
 Route::get('agrochem/{id}/gap',array('uses'=>'AgrochemController@findGap'));
 Route::get('agrochem/{id}/pdw',array('uses'=>'AgrochemController@findPestsDiseasesWeeds'));
 Route::get('agrochem/{id}',array('uses'=>'AgrochemController@find'));
-
+//--/Agrochem Routes
 
 
 //CommercialOrganic Routes
-Route::middleware(['auth:api', 'api.editor'])->group(function () {
-    Route::post('commercial_organic',array('uses'=>'CommercialOrganicController@new'));
-    Route::post('commercial_organic/{id}/image',array('uses'=>'ImagesController@updateImage'));
-    Route::put('commercial_organic/{id}',array('uses'=>'CommercialOrganicController@update'));
-    Route::delete('commercial_organic/{id}',array('uses'=>'CommercialOrganicController@delete'));
-});
 Route::get('commercial_organic',array('uses'=>'CommercialOrganicController@all'));
 Route::get('commercial_organic/filter',array('uses'=>'CommercialOrganicController@filter'));
 Route::get('commercial_organic/filter/{search_value}',array('uses'=>'CommercialOrganicController@filter'));
@@ -177,15 +257,10 @@ Route::get('commercial_organic/{id}/gap',array('uses'=>'CommercialOrganicControl
 Route::get('commercial_organic/{id}/homemade_organic',array('uses'=>'CommercialOrganicController@findHomemadeOrganic'));
 Route::get('commercial_organic/{id}/pdw',array('uses'=>'CommercialOrganicController@findPestsDiseaseWeed'));
 Route::get('commercial_organic/{id}',array('uses'=>'CommercialOrganicController@find'));
+//--/CommercialOrganic Routes
 
 
 //GAP Routes
-Route::middleware(['auth:api', 'api.editor'])->group(function () {
-    Route::post('gap',array('uses'=>'GapController@new'));
-    Route::post('gap/{id}/image',array('uses'=>'ImagesController@updateImage'));
-    Route::put('gap/{id}',array('uses'=>'GapController@update'));
-    Route::delete('gap/{id}',array('uses'=>'GapController@delete'));
-});
 Route::get('gap',array('uses'=>'GapController@all'));
 Route::get('gap/filter',array('uses'=>'GapController@filter'));
 Route::get('gap/filter/{search_value}',array('uses'=>'GapController@filter'));
@@ -198,16 +273,10 @@ Route::get('gap/summary/count',array('uses'=>'GapController@summaryCount'));
 Route::get('gap/summary/count/{search_value}',array('uses'=>'GapController@summaryCount'));
 Route::get('gap/{id}',array('uses'=>'GapController@find'));
 Route::get('gap/{id}/pdw',array('uses'=>'GapController@findPestsDiseaseWeed'));
-
+//--/GAP Routes
 
 
 //HomeMadeOrganic Routes
-Route::middleware(['auth:api', 'api.editor'])->group(function () {
-    Route::post('homemade_organic',array('uses'=>'HomeMadeOrganicController@new'));
-    Route::post('homemade_organic/{id}/image',array('uses'=>'ImagesController@updateImage'));
-    Route::put('homemade_organic/{id}',array('uses'=>'HomeMadeOrganicController@update'));
-    Route::delete('homemade_organic/{id}',array('uses'=>'HomeMadeOrganicController@delete'));
-});
 Route::get('homemade_organic',array('uses'=>'HomeMadeOrganicController@all'));
 Route::get('homemade_organic/filter',array('uses'=>'HomeMadeOrganicController@filter'));
 Route::get('homemade_organic/filter/{search_value}',array('uses'=>'HomeMadeOrganicController@filter'));
@@ -220,16 +289,10 @@ Route::get('homemade_organic/summary/count',array('uses'=>'HomeMadeOrganicContro
 Route::get('homemade_organic/summary/count/{search_value}',array('uses'=>'HomeMadeOrganicController@summaryCount'));
 Route::get('homemade_organic/{id}',array('uses'=>'HomeMadeOrganicController@find'));
 Route::get('homemade_organic/{id}/pdw',array('uses'=>'HomeMadeOrganicController@findPestsDiseaseWeed'));
-
+//--/HomeMadeOrganic Routes
 
 
 //LocalNames Routes
-Route::middleware(['auth:api', 'api.editor'])->group(function () {
-    Route::post('local_names',array('uses'=>'LocalNamesController@new'));
-    Route::post('local_names/{id}/image',array('uses'=>'ImagesController@updateImage'));
-    Route::put('local_names/{id}',array('uses'=>'LocalNamesController@update'));
-    Route::delete('local_names/{id}',array('uses'=>'LocalNamesController@delete'));
-});
 Route::get('local_names',array('uses'=>'LocalNamesController@all'));
 Route::get('local_names/filter',array('uses'=>'LocalNamesController@filter'));
 Route::get('local_names/filter/{search_value}',array('uses'=>'LocalNamesController@filter'));
@@ -242,16 +305,10 @@ Route::get('local_names/summary/count',array('uses'=>'LocalNamesController@summa
 Route::get('local_names/summary/count/{search_value}',array('uses'=>'LocalNamesController@summaryCount'));
 Route::get('local_names/{id}',array('uses'=>'LocalNamesController@find'));
 Route::get('local_names/{id}/pdw',array('uses'=>'LocalNamesController@findPestsDiseaseWeed'));
-
+//--/LocalNames Routes
 
 
 //Crops Routes
-Route::middleware(['auth:api', 'api.editor'])->group(function () {
-    Route::post('crops',array('uses'=>'CropsController@new'));
-    Route::post('crops/{id}/image/',array('uses'=>'ImagesController@updateImage'));
-    Route::put('crops/{id}',array('uses'=>'CropsController@update'));
-    Route::delete('crops/{id}',array('uses'=>'CropsController@delete'));
-});
 Route::get('crops',array('uses'=>'CropsController@all'));
 Route::get('crops/filter',array('uses'=>'CropsController@filter'));
 Route::get('crops/filter/{search_value}',array('uses'=>'CropsController@filter'));
@@ -269,16 +326,10 @@ Route::get('crops/{id}/agrochem/',array('uses'=>'CropsController@findAgrochems')
 Route::get('crops/{id}/commercial_organic',array('uses'=>'CropsController@findCommercialOrganic'));
 Route::get('crops/{id}/homemade_organic',array('uses'=>'CropsController@findHomemadeOrganic'));
 Route::get('crops/{id}/gap',array('uses'=>'CropsController@findGap'));
-
+//--/Crops Routes
 
 
 //CommercialOrganic Routes
-Route::middleware(['auth:api', 'api.editor'])->group(function () {
-    Route::post('control_methods',array('uses'=>'ControlMethodsController@new'));
-    Route::post('control_methods/{id}/image/',array('uses'=>'ImagesController@updateImage'));
-    Route::put('control_methods/{id}',array('uses'=>'ControlMethodsController@update'));
-    Route::delete('control_methods/{id}',array('uses'=>'ControlMethodsController@delete'));
-});
 Route::get('control_methods',array('uses'=>'ControlMethodsController@all'));
 Route::get('control_methods/filter',array('uses'=>'ControlMethodsController@filter'));
 Route::get('control_methods/filter/{search_value}',array('uses'=>'ControlMethodsController@filter'));
@@ -293,13 +344,16 @@ Route::get('control_methods/summary/count/{search_value}',array('uses'=>'Control
 Route::get('control_methods/{id}',array('uses'=>'ControlMethodsController@find'));
 Route::get('control_methods/{id}/pdw/',array('uses'=>'ControlMethodsController@findPestsDiseasesWeeds'));
 Route::get('control_methods/{id}/commercial_organic/',array('uses'=>'ControlMethodsController@findCommercialOrganic'));
+//--/CommercialOrganic Routes
 
 
 //Images Routes
-Route::middleware(['auth:api', 'api.editor'])->group(function () {
-    Route::post('image',array('uses'=>'ImagesController@upload'));
-});
 Route::get('image/{fileName}',array('uses'=>'ImagesController@getImageOriginalSize'));
 Route::get('image/{dim}/{fileName}',array('uses'=>'ImagesController@getImageResizedSquare'));
 Route::get('image/{dimX}/{dimY}/{fileName}',array('uses'=>'ImagesController@getImageResizedRectangle'));
+//--/Images Routes
 
+
+/**
+ * Public Routes
+ */

@@ -55,7 +55,7 @@
                                                         <button class="btn btn-primary px-4" type="submit">Login</button>
                                                     </div>
                                                     <div class="col-6 text-right">
-                                                        <button class="btn btn-link px-0" type="button">Forgot password?</button>
+                                                        <a href="password/reset" class="btn btn-link px-0" type="button">Forgot password?</a>
                                                     </div>
                                                 </div>
                                             </div>

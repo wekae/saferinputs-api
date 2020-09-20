@@ -17,7 +17,7 @@ class EditorAuth
     public function handle($request, Closure $next)
     {
         if(Auth::guard('api')->check()){
-            if($request->user()->status==='deactivated'){
+            if($request->user()->active===0){
                 //Check if account is active
                 Auth::logout();
                 $message = "You're account has been deactivated. Contact the Administrator";
@@ -34,7 +34,7 @@ class EditorAuth
                 }
             }
         }else if(Auth::guard('web')->check()){
-            if($request->user()->status==='deactivated'){
+            if($request->user()->active===0){
                 //Check if account is active
                 Auth::logout();
                 $message = "You're account has been deactivated. Contact the Administrator";

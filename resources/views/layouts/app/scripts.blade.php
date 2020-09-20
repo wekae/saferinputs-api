@@ -11,6 +11,7 @@
 {{--<script src="{{ asset('/js/coreui.js') }}"></script>--}}
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="{{ asset('/js/coreui.bundle.js') }}"></script>
+{{--<script src="{{ asset('/js/bootstrap.bundle.js') }}"></script>--}}
 {{--<script src="{{ asset('/js/coreui.esm.js') }}"></script>--}}
 {{--<script src="{{ asset('/js/coreui-utilities.js') }}"></script>--}}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
