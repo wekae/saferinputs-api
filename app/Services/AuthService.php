@@ -132,16 +132,17 @@ class AuthService
 
         return array(
             'login' => true,
-            'user' => auth()->user(),
-            'user_info' => $user_info,
+//            'user' => auth()->user(),
+//            'user_info' => $user_info,
             'access_token' => $accessToken
         );
 
     }
 
     public function logout(Request $request){
-//        $token = $request->user();
+//        $token = Auth::user();
 //        $token->revoke();
+        $this->revokeToken($request);
         Auth::logout();
 //        return $token;
     }
@@ -188,6 +189,11 @@ class AuthService
         $result = json_decode((string) $response->getBody(), true);
         return $result;
 //        return response()->json($result, $this->successStatus);
+    }
+
+    public function revokeToken(Request $request){
+        $attributes = array("request"=>$request);
+        return $this->authRepository->revokeToken($attributes);
     }
 
     public function signupActivate(Request $request){

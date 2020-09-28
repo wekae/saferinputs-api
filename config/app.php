@@ -176,6 +176,9 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\UtilsFacadeServiceProvider::class,
 
+        // For use with Custom JWT formatter
+        App\Auth\Providers\PassportServiceProvider::class,
+
 
         /*
          * Custom Service Providers

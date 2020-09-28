@@ -131,7 +131,7 @@ Route::middleware(['auth:api', 'api.author'])->group(function () {
 Route::get('/auth/signup/activate/{token}', array('uses'=>'AuthController@signupActivate','name'=>'signupActivate'));
 Route::post('/login', array('uses'=>'AuthController@login'));
 Route::post('/subscribe', array('uses'=>'AuthController@register','name'=>'register'));
-Route::get('/logout', array('uses'=>'AuthController@delete'))->name('logout');
+Route::get('/logout', array('uses'=>'AuthController@logout'))->name('logout');
 
 
 Route::get('test/filter/{search_value}',array('uses'=>'ImagesController@test'));

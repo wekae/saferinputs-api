@@ -107,11 +107,11 @@ class AuthController extends Controller
         $return_data = $this->authService->login($request);
 
         if($return_data['login']){
-            $user = $return_data['user'];
+//            $user = $return_data['user'];
             $access_token = $return_data['access_token'];
             $item = array(
-                'user' => $user,
-                'user_info' => $return_data['user_info'],
+//                'user' => $user,
+//                'user_info' => $return_data['user_info'],
                 'access_token' => $access_token
             );
             $status_code = $this->successStatus;

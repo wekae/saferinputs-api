@@ -240,6 +240,24 @@ class AuthRepositoryMysqlImpl implements AuthRepository
         }
     }
 
+    public function revokeToken(array $attributes){
+
+        $request = $attributes["request"];
+
+        $tokenId = $request->tokenId;
+
+        $tokenRepository = app('Laravel\Passport\TokenRepository');
+        $refreshTokenRepository = app('Laravel\Passport\RefreshTokenRepository');
+
+        // Revoke an access token...
+        $tokenRepository->revokeAccessToken($tokenId);
+
+        // Revoke all of the token's refresh tokens...
+        $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($tokenId);
+
+        return true;
+    }
+
     public function delete($id)
     {
         $item = $this->user->find($id);
