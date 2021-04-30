@@ -93,8 +93,20 @@ Route::post('/auth', array('uses' => 'web\AdminController@webLogin'));
 
 
 // Download Routes
-Route::get('/downloads/pdw', array('uses' => 'DownloadsController@allPestsDiseaseWeeds'));
+Route::get('/download/pdw', array('uses' => 'DownloadsController@allPestsDiseaseWeeds'));
+Route::get('/download/{token}',array('uses'=>'Cms\DownloadsController@download'));
 // --/Download Routes
+
+
+
+// --/Download Routes
+Route::get('media/{token}',array('uses'=>'Cms\MediaController@getMediaOriginalSize'));
+Route::get('media/{dim}/{token}',array('uses'=>'Cms\MediaController@getMediaResizedSquare'));
+Route::get('media/{dimX}/{dimY}/{token}',array('uses'=>'Cms\MediaController@getMediaResizedRectangle'));
+// --/Download Routes
+
+
+
 
 // Configuration Routes
 //Route::get('/', array('uses'=>'InitController@index'));

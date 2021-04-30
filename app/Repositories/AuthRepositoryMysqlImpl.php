@@ -95,7 +95,8 @@ class AuthRepositoryMysqlImpl implements AuthRepository
                 return $return_data;
             }else{
                 $return_data = array(
-                    'success' => false
+                    'success' => false,
+                    'duplicate'=>false
                 );
                 return $return_data;
             }

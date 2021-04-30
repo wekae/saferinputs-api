@@ -139,6 +139,123 @@ Route::get('test/filter/',array('uses'=>'ImagesController@test'));
 
 
 
+
+//Downloads Routes
+Route::post('downloads',array('uses'=>'Cms\DownloadsController@new'));
+Route::post('downloads/entity/{entity_id}',array('uses'=>'Cms\DownloadsController@newWithAssociation'));
+Route::post('downloads/{id}/file',array('uses'=>'Cms\DownloadsController@updateFile'));
+Route::put('downloads/{id}',array('uses'=>'Cms\DownloadsController@update'));
+Route::delete('downloads/{id}',array('uses'=>'Cms\DownloadsController@delete'));
+//--/Downloads Routes
+
+
+
+
+//Downloads Routes
+Route::get('downloads',array('uses'=>'Cms\DownloadsController@all'));
+Route::get('downloads/datatable',array('uses'=>'Cms\DownloadsController@dataTable'));
+Route::get('downloads/filter',array('uses'=>'Cms\DownloadsController@filter'));
+Route::get('downloads/filter/{search_value}',array('uses'=>'Cms\DownloadsController@filter'));
+Route::get('downloads/names',array('uses'=>'Cms\DownloadsController@getPestDiseasesWeedsNames'));
+Route::get('downloads/summary/names',array('uses'=>'Cms\DownloadsController@summaryNames'));
+Route::get('downloads/summary/names/{search_value}',array('uses'=>'Cms\DownloadsController@summaryNames'));
+Route::get('downloads/summary/count',array('uses'=>'Cms\DownloadsController@summaryCount'));
+Route::get('downloads/summary/count/{search_value}',array('uses'=>'Cms\DownloadsController@summaryCount'));
+Route::get('downloads/{id}',array('uses'=>'Cms\DownloadsController@find'));
+//--/Downloads Routes
+
+
+
+
+//Media Routes
+Route::post('media',array('uses'=>'Cms\MediaController@new'));
+Route::post('media/entity/{entity_id}',array('uses'=>'Cms\MediaController@newWithAssociation'));
+Route::post('media/{id}/file',array('uses'=>'Cms\MediaController@updateFile'));
+Route::put('media/{id}',array('uses'=>'Cms\MediaController@update'));
+Route::delete('media/{id}',array('uses'=>'Cms\MediaController@delete'));
+//--/Media Routes
+
+
+
+
+//Media Routes
+Route::get('media',array('uses'=>'Cms\MediaController@all'));
+Route::get('media/datatable',array('uses'=>'Cms\MediaController@dataTable'));
+Route::get('media/filter',array('uses'=>'Cms\MediaController@filter'));
+Route::get('media/filter/{search_value}',array('uses'=>'Cms\MediaController@filter'));
+Route::get('media/names',array('uses'=>'Cms\MediaController@getPestDiseasesWeedsNames'));
+Route::get('media/summary/names',array('uses'=>'Cms\MediaController@summaryNames'));
+Route::get('media/summary/names/{search_value}',array('uses'=>'Cms\MediaController@summaryNames'));
+Route::get('media/summary/count',array('uses'=>'Cms\MediaController@summaryCount'));
+Route::get('media/summary/count/{search_value}',array('uses'=>'Cms\MediaController@summaryCount'));
+Route::get('media/token/{token}',array('uses'=>'Cms\MediaController@findByToken'));
+Route::get('media/{id}',array('uses'=>'Cms\MediaController@find'));
+//--/Media Routes
+
+
+
+
+//Posts Routes
+Route::post('posts',array('uses'=>'Cms\PostsController@new'));
+Route::put('posts/{id}',array('uses'=>'Cms\PostsController@update'));
+Route::delete('posts/{id}',array('uses'=>'Cms\PostsController@delete'));
+//--/Posts Routes
+
+
+
+
+//Posts Routes
+Route::get('posts',array('uses'=>'Cms\PostsController@all'));
+Route::get('posts/datatable',array('uses'=>'Cms\PostsController@dataTable'));
+Route::get('posts/filter',array('uses'=>'Cms\PostsController@filter'));
+Route::get('posts/filter/{search_value}',array('uses'=>'Cms\PostsController@filter'));
+Route::get('posts/summary/names',array('uses'=>'Cms\PostsController@summaryNames'));
+Route::get('posts/summary/names/{search_value}',array('uses'=>'Cms\PostsController@summaryNames'));
+Route::get('posts/summary/count',array('uses'=>'Cms\PostsController@summaryCount'));
+Route::get('posts/summary/count/{search_value}',array('uses'=>'Cms\PostsController@summaryCount'));
+//Route::post('posts/{id}/comments',array('uses'=>'PostsController@findComments'));
+Route::get('posts/year/{year}/month/{month}',array('uses'=>'Cms\PostsController@findByYearAndMonth'));
+Route::get('posts/tag/{tag}',array('uses'=>'Cms\PostsController@findByTag'));
+Route::get('posts/year/{year}',array('uses'=>'Cms\PostsController@findByYear'));
+Route::get('posts/month/{month}',array('uses'=>'Cms\PostsController@findByMonth'));
+Route::get('posts/{post_id}/comments',array('uses'=>'Cms\CommentsController@findByPost'));
+Route::get('posts/{post_id}/downloads',array('uses'=>'Cms\PostsController@findDownloads'));
+Route::get('posts/{post_id}/media',array('uses'=>'Cms\PostsController@findMedia'));
+Route::get('posts/{id}',array('uses'=>'Cms\PostsController@find'));
+//--/Posts Routes
+
+
+
+
+//Comments Routes
+Route::post('comments',array('uses'=>'Cms\CommentsController@new'));
+Route::put('comments/{id}',array('uses'=>'Cms\CommentsController@update'));
+Route::delete('comments/{id}',array('uses'=>'Cms\CommentsController@delete'));
+//--/Comments Routes
+
+
+
+
+//Comments Routes
+Route::get('comments',array('uses'=>'Cms\CommentsController@all'));
+Route::get('comments/filter',array('uses'=>'Cms\CommentsController@filter'));
+Route::get('comments/filter/{search_value}',array('uses'=>'Cms\CommentsController@filter'));
+Route::get('comments/summary/count',array('uses'=>'Cms\CommentsController@summaryCount'));
+Route::get('comments/summary/count/{search_value}',array('uses'=>'Cms\CommentsController@summaryCount'));
+Route::get('comments/{id}',array('uses'=>'Cms\CommentsController@find'));
+//--/Comments Routes
+
+
+
+
+
+
+
+
+
+
+
+
 //Search Routes
 Route::get('active_ingredients/search',array('uses'=>'SearchController@searchActiveIngredients'));
 Route::get('active_ingredients/search/{value}',array('uses'=>'SearchController@searchActiveIngredients'));
