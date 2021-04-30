@@ -21,18 +21,28 @@ use Intervention\Image\Facades\Image;
 
 class ImageService extends FileService
 {
-    private $basePath = 'assets/img/';
+
+    protected $directory = 'img';
+    protected $imagePath;
+
+
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->imagePath = $this->basePath.DIRECTORY_SEPARATOR.$this->directory.DIRECTORY_SEPARATOR;
+    }
 
     public function encode($image){
 
     }
 
     public function save($image, $fileName){
-        $path = $this->basePath.$fileName;
+        $path = $this->imagePath.$fileName;
 
         // resizing an uploaded file
-            Image::make($image)->save($path);
         try{
+            Image::make($image)->save($path);
             return array(
                 'status'=>true
             );
@@ -49,7 +59,8 @@ class ImageService extends FileService
     }
 
     public function get($filename){
-        $path = $this->basePath.$filename;
+        $path = $this->imagePath.$filename;
+//        return $path;
         try{
 //            $img = Image::make($path);
             // pass calls to image cache
@@ -61,15 +72,16 @@ class ImageService extends FileService
                 'image'=>$img
             );
         }catch(Exception $e){
-            return array(
-                'status'=>false,
-                'message'=>'Image does not exist'
-            );
+            return $e->getMessage();
+//            return array(
+//                'status'=>false,
+//                'message'=>'Image does not exist'
+//            );
         }
     }
 
     public function getResizedSquare($filename, $dim){
-        $path = $this->basePath.$filename;
+        $path = $this->imagePath.$filename;
         try{
 //            $img = Image::make($path)->resize($dim, $dim);
             // pass calls to image cache
@@ -89,7 +101,7 @@ class ImageService extends FileService
     }
 
     public function getResizedRectangle($filename, $dimX, $dimY){
-        $path = $this->basePath.$filename;
+        $path = $this->imagePath.$filename;
         try{
 //            $img = Image::make($path)->resize($dimX, $dimY);
             // pass calls to image cache
