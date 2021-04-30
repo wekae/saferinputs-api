@@ -7,7 +7,19 @@ use Illuminate\Support\Facades\Storage;
 
 class FileService
 {
-    private $basePath = 'assets/img/';
+    protected $basePath = 'assets/';
+    protected $storageBasePath = 'public'.DIRECTORY_SEPARATOR.'assets';
+    protected $storagePublicPath = 'storage'.DIRECTORY_SEPARATOR.'assets';
+    protected $directory = '';
+
+    public function __construct()
+    {
+
+    }
+
+    public function setDirectory($directory){
+        $this->directory = $directory;
+    }
 
     public function fileName($file){
         $file_name = $file->getClientOriginalName();
@@ -40,8 +52,8 @@ class FileService
     }
 
     public function delete($image){
-        if(File::exists(public_path(DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'img'.DIRECTORY_SEPARATOR.$image))){
-            return File::delete(public_path(DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'img'.DIRECTORY_SEPARATOR.$image));
+        if(File::exists(public_path(DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.$this->directory.DIRECTORY_SEPARATOR.$image))){
+            return File::delete(public_path(DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.$this->directory.DIRECTORY_SEPARATOR.$image));
         }else{
             return false;
         }
