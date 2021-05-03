@@ -4,10 +4,12 @@ namespace App\Models\Cms;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Searchable\SearchResult;
 
-class Posts extends Model implements \Spatie\Searchable\Searchable
+class Posts extends Model implements \Spatie\Searchable\Searchable, Auditable
 {
+    use \OwenIt\Auditing\Auditable;
 
     use SoftDeletes;
 

@@ -4,10 +4,12 @@ namespace App\models;
 
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
+use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Searchable\SearchResult;
 
-class ControlMethods extends Model implements \Spatie\Searchable\Searchable
+class ControlMethods extends Model implements \Spatie\Searchable\Searchable, Auditable
 {
+    use \OwenIt\Auditing\Auditable;
     /**
      * Implementation for Spatie Laravel Search
      * @return SearchResult

@@ -5,9 +5,11 @@ namespace App\Models\Cms;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Entity extends Model
+class Entity extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
 
 
 

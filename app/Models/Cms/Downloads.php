@@ -4,9 +4,11 @@ namespace App\Models\Cms;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Downloads extends Model
+class Downloads extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
 
 
     use SoftDeletes;

@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Laravel\Scout\Searchable;
+use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Searchable\SearchResult;
 
-class PestsDiseaseWeed extends Model implements \Spatie\Searchable\Searchable
+class PestsDiseaseWeed extends Model implements \Spatie\Searchable\Searchable, Auditable
 {
+    use \OwenIt\Auditing\Auditable;
     /**
      * Implementation for Spatie Laravel Search
      * @return SearchResult

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Storage;
 
 class FileService
 {
-    protected $basePath = 'assets/';
+    protected $basePath = 'assets';
     protected $storageBasePath = 'public'.DIRECTORY_SEPARATOR.'assets';
     protected $storagePublicPath = 'storage'.DIRECTORY_SEPARATOR.'assets';
     protected $directory = '';
