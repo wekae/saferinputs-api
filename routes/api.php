@@ -134,8 +134,8 @@ Route::post('/subscribe', array('uses'=>'AuthController@register','name'=>'regis
 Route::get('/logout', array('uses'=>'AuthController@logout'))->name('logout');
 
 
-Route::get('test/filter/{search_value}',array('uses'=>'ImagesController@test'));
-Route::get('test/filter/',array('uses'=>'ImagesController@test'));
+//Route::get('test/filter/{search_value}',array('uses'=>'ImagesController@test'));
+Route::get('test/filter?/',array('uses'=>'ImagesController@test'));
 
 
 
@@ -154,13 +154,10 @@ Route::delete('downloads/{id}',array('uses'=>'Cms\DownloadsController@delete'));
 //Downloads Routes
 Route::get('downloads',array('uses'=>'Cms\DownloadsController@all'));
 Route::get('downloads/datatable',array('uses'=>'Cms\DownloadsController@dataTable'));
-Route::get('downloads/filter',array('uses'=>'Cms\DownloadsController@filter'));
-Route::get('downloads/filter/{search_value}',array('uses'=>'Cms\DownloadsController@filter'));
+Route::get('downloads/filter/{search_value?}',array('uses'=>'Cms\DownloadsController@filter'));
 Route::get('downloads/names',array('uses'=>'Cms\DownloadsController@getPestDiseasesWeedsNames'));
-Route::get('downloads/summary/names',array('uses'=>'Cms\DownloadsController@summaryNames'));
-Route::get('downloads/summary/names/{search_value}',array('uses'=>'Cms\DownloadsController@summaryNames'));
-Route::get('downloads/summary/count',array('uses'=>'Cms\DownloadsController@summaryCount'));
-Route::get('downloads/summary/count/{search_value}',array('uses'=>'Cms\DownloadsController@summaryCount'));
+Route::get('downloads/summary/names/{search_value?}',array('uses'=>'Cms\DownloadsController@summaryNames'));
+Route::get('downloads/summary/count/{search_value?}',array('uses'=>'Cms\DownloadsController@summaryCount'));
 Route::get('downloads/{id}',array('uses'=>'Cms\DownloadsController@find'));
 //--/Downloads Routes
 
@@ -181,13 +178,10 @@ Route::delete('media/{id}',array('uses'=>'Cms\MediaController@delete'));
 //Media Routes
 Route::get('media',array('uses'=>'Cms\MediaController@all'));
 Route::get('media/datatable',array('uses'=>'Cms\MediaController@dataTable'));
-Route::get('media/filter',array('uses'=>'Cms\MediaController@filter'));
-Route::get('media/filter/{search_value}',array('uses'=>'Cms\MediaController@filter'));
+Route::get('media/filter/{search_value?}',array('uses'=>'Cms\MediaController@filter'));
 Route::get('media/names',array('uses'=>'Cms\MediaController@getPestDiseasesWeedsNames'));
-Route::get('media/summary/names',array('uses'=>'Cms\MediaController@summaryNames'));
-Route::get('media/summary/names/{search_value}',array('uses'=>'Cms\MediaController@summaryNames'));
-Route::get('media/summary/count',array('uses'=>'Cms\MediaController@summaryCount'));
-Route::get('media/summary/count/{search_value}',array('uses'=>'Cms\MediaController@summaryCount'));
+Route::get('media/summary/names/{search_value?}',array('uses'=>'Cms\MediaController@summaryNames'));
+Route::get('media/summary/count/{search_value?}',array('uses'=>'Cms\MediaController@summaryCount'));
 Route::get('media/token/{token}',array('uses'=>'Cms\MediaController@findByToken'));
 Route::get('media/{id}',array('uses'=>'Cms\MediaController@find'));
 //--/Media Routes
@@ -207,12 +201,9 @@ Route::delete('posts/{id}',array('uses'=>'Cms\PostsController@delete'));
 //Posts Routes
 Route::get('posts',array('uses'=>'Cms\PostsController@all'));
 Route::get('posts/datatable',array('uses'=>'Cms\PostsController@dataTable'));
-Route::get('posts/filter',array('uses'=>'Cms\PostsController@filter'));
-Route::get('posts/filter/{search_value}',array('uses'=>'Cms\PostsController@filter'));
-Route::get('posts/summary/names',array('uses'=>'Cms\PostsController@summaryNames'));
-Route::get('posts/summary/names/{search_value}',array('uses'=>'Cms\PostsController@summaryNames'));
-Route::get('posts/summary/count',array('uses'=>'Cms\PostsController@summaryCount'));
-Route::get('posts/summary/count/{search_value}',array('uses'=>'Cms\PostsController@summaryCount'));
+Route::get('posts/filter/{search_value?}',array('uses'=>'Cms\PostsController@filter'));
+Route::get('posts/summary/names/{search_value?}',array('uses'=>'Cms\PostsController@summaryNames'));
+Route::get('posts/summary/count/{search_value?}',array('uses'=>'Cms\PostsController@summaryCount'));
 //Route::post('posts/{id}/comments',array('uses'=>'PostsController@findComments'));
 Route::get('posts/year/{year}/month/{month}',array('uses'=>'Cms\PostsController@findByYearAndMonth'));
 Route::get('posts/tag/{tag}',array('uses'=>'Cms\PostsController@findByTag'));
@@ -238,10 +229,8 @@ Route::delete('comments/{id}',array('uses'=>'Cms\CommentsController@delete'));
 
 //Comments Routes
 Route::get('comments',array('uses'=>'Cms\CommentsController@all'));
-Route::get('comments/filter',array('uses'=>'Cms\CommentsController@filter'));
-Route::get('comments/filter/{search_value}',array('uses'=>'Cms\CommentsController@filter'));
-Route::get('comments/summary/count',array('uses'=>'Cms\CommentsController@summaryCount'));
-Route::get('comments/summary/count/{search_value}',array('uses'=>'Cms\CommentsController@summaryCount'));
+Route::get('comments/filter/{search_value?}',array('uses'=>'Cms\CommentsController@filter'));
+Route::get('comments/summary/count/{search_value?}',array('uses'=>'Cms\CommentsController@summaryCount'));
 Route::get('comments/{id}',array('uses'=>'Cms\CommentsController@find'));
 //--/Comments Routes
 
@@ -257,37 +246,25 @@ Route::get('comments/{id}',array('uses'=>'Cms\CommentsController@find'));
 
 
 //Search Routes
-Route::get('active_ingredients/search',array('uses'=>'SearchController@searchActiveIngredients'));
-Route::get('active_ingredients/search/{value}',array('uses'=>'SearchController@searchActiveIngredients'));
-Route::get('agrochem/search',array('uses'=>'SearchController@searchAgrochem'));
-Route::get('agrochem/search/{value}',array('uses'=>'SearchController@searchAgrochem'));
-Route::get('commercial_organic/search',array('uses'=>'SearchController@searchCommercialOrganic'));
-Route::get('commercial_organic/search/{value}',array('uses'=>'SearchController@searchCommercialOrganic'));
-Route::get('crops/search',array('uses'=>'SearchController@searchCrops'));
-Route::get('crops/search/{value}',array('uses'=>'SearchController@searchCrops'));
-Route::get('gap/search',array('uses'=>'SearchController@searchGap'));
-Route::get('gap/search/{value}',array('uses'=>'SearchController@searchGap'));
-Route::get('homemade_organic/search',array('uses'=>'SearchController@searchHomemadeOrganic'));
-Route::get('homemade_organic/search/{value}',array('uses'=>'SearchController@searchHomemadeOrganic'));
-Route::get('local_names/search',array('uses'=>'SearchController@searchLocalNames'));
-Route::get('local_names/search/{value}',array('uses'=>'SearchController@searchLocalNames'));
-Route::get('pdw/search',array('uses'=>'SearchController@searchPestDiseaseWeed'));
-Route::get('pdw/search/{value}',array('uses'=>'SearchController@searchPestDiseaseWeed'));
+Route::get('active_ingredients/search/{value?}',array('uses'=>'SearchController@searchActiveIngredients'));
+Route::get('agrochem/search/{value?}',array('uses'=>'SearchController@searchAgrochem'));
+Route::get('commercial_organic/search/{value?}',array('uses'=>'SearchController@searchCommercialOrganic'));
+Route::get('crops/search/{value?}',array('uses'=>'SearchController@searchCrops'));
+Route::get('gap/search/{value?}',array('uses'=>'SearchController@searchGap'));
+Route::get('homemade_organic/search/{value?}',array('uses'=>'SearchController@searchHomemadeOrganic'));
+Route::get('local_names/search/{value?}',array('uses'=>'SearchController@searchLocalNames'));
+Route::get('pdw/search/{value?}',array('uses'=>'SearchController@searchPestDiseaseWeed'));
 Route::get('search',array('uses'=>'SearchController@search'));
-Route::get('search/',array('uses'=>'SearchController@search'));
-Route::get('search_alt',array('uses'=>'SearchController@searchAlt'));
-Route::get('search_alt/{value}',array('uses'=>'SearchController@searchAlt'));
+Route::get('search_alt/{value?}',array('uses'=>'SearchController@searchAlt'));
 //--/Search Routes
 
 
 //PestsDiseaseWeed Routes
 Route::get('pdw',array('uses'=>'PestsDiseaseWeedController@all'));
 Route::get('pdw/datatable',array('uses'=>'PestsDiseaseWeedController@dataTable'));
-Route::get('pdw/filter',array('uses'=>'PestsDiseaseWeedController@filter'));
-Route::get('pdw/filter/{search_value}',array('uses'=>'PestsDiseaseWeedController@filter'));
+Route::get('pdw/filter/{search_value?}',array('uses'=>'PestsDiseaseWeedController@filter'));
 Route::get('pdw/names',array('uses'=>'PestsDiseaseWeedController@getPestDiseasesWeedsNames'));
-Route::get('pdw/summary/names',array('uses'=>'PestsDiseaseWeedController@summaryNames'));
-Route::get('pdw/summary/names/{search_value}',array('uses'=>'PestsDiseaseWeedController@summaryNames'));
+Route::get('pdw/summary/names/{search_value?}',array('uses'=>'PestsDiseaseWeedController@summaryNames'));
 Route::get('pdw/summary/count/agrochems',array('uses'=>'PestsDiseaseWeedController@summaryCountAgrochem'));
 Route::get('pdw/summary/count/commercial_organic',array('uses'=>'PestsDiseaseWeedController@summaryCountCommercialOrganic'));
 Route::get('pdw/summary/count/control_methods',array('uses'=>'PestsDiseaseWeedController@summaryCountControlMethods'));
@@ -295,8 +272,7 @@ Route::get('pdw/summary/count/crops',array('uses'=>'PestsDiseaseWeedController@s
 Route::get('pdw/summary/count/gap',array('uses'=>'PestsDiseaseWeedController@summaryCountGap'));
 Route::get('pdw/summary/count/homemade_organic',array('uses'=>'PestsDiseaseWeedController@summaryCountHomemadeOrganic'));
 Route::get('pdw/summary/count/local_names',array('uses'=>'PestsDiseaseWeedController@summaryCountLocalNames'));
-Route::get('pdw/summary/count',array('uses'=>'PestsDiseaseWeedController@summaryCount'));
-Route::get('pdw/summary/count/{search_value}',array('uses'=>'PestsDiseaseWeedController@summaryCount'));
+Route::get('pdw/summary/count/{search_value?}',array('uses'=>'PestsDiseaseWeedController@summaryCount'));
 Route::get('pdw/{id}/agrochems',array('uses'=>'PestsDiseaseWeedController@findAgrochems'));
 Route::get('pdw/{id}/commercial_organic',array('uses'=>'PestsDiseaseWeedController@findCommercialOrganic'));
 Route::get('pdw/{id}/crops',array('uses'=>'PestsDiseaseWeedController@findCrops'));
@@ -310,15 +286,12 @@ Route::get('pdw/{id}',array('uses'=>'PestsDiseaseWeedController@find'));
 
 //ActiveIngredients Routes
 Route::get('active_ingredients',array('uses'=>'ActiveIngredientsController@all'));
-Route::get('active_ingredients/filter',array('uses'=>'ActiveIngredientsController@filter'));
-Route::get('active_ingredients/filter/{search_value}',array('uses'=>'ActiveIngredientsController@filter'));
+Route::get('active_ingredients/filter/{search_value?}',array('uses'=>'ActiveIngredientsController@filter'));
 Route::get('active_ingredients/datatable',array('uses'=>'ActiveIngredientsController@dataTable'));
 Route::get('active_ingredients/names',array('uses'=>'ActiveIngredientsController@getActiveIngredientNames'));
-Route::get('active_ingredients/summary/names',array('uses'=>'ActiveIngredientsController@summaryNames'));
-Route::get('active_ingredients/summary/names/{search_value}',array('uses'=>'ActiveIngredientsController@summaryNames'));
+Route::get('active_ingredients/summary/names/{search_value?}',array('uses'=>'ActiveIngredientsController@summaryNames'));
 Route::get('active_ingredients/summary/count/agrochem',array('uses'=>'ActiveIngredientsController@summaryCountAgrochem'));
-Route::get('active_ingredients/summary/count',array('uses'=>'ActiveIngredientsController@summaryCount'));
-Route::get('active_ingredients/summary/count/{search_value}',array('uses'=>'ActiveIngredientsController@summaryCount'));
+Route::get('active_ingredients/summary/count/{search_value?}',array('uses'=>'ActiveIngredientsController@summaryCount'));
 Route::get('active_ingredients/{id}/agrochems',array('uses'=>'ActiveIngredientsController@findAgrochems'));
 Route::get('active_ingredients/{id}/commercial_organic',array('uses'=>'ActiveIngredientsController@findCommercialOrganic'));
 Route::get('active_ingredients/{id}/gap',array('uses'=>'ActiveIngredientsController@findGap'));
@@ -329,23 +302,20 @@ Route::get('active_ingredients/{id}',array('uses'=>'ActiveIngredientsController@
 
 //Agrochem Routes
 Route::get('agrochem',array('uses'=>'AgrochemController@all'));
-Route::get('agrochem/filter/active_ingredients',array('uses'=>'AgrochemController@filterByActiveIngredients'));
-Route::get('agrochem/filter/crops',array('uses'=>'AgrochemController@filterByCrops'));
-Route::get('agrochem/filter/pdw',array('uses'=>'AgrochemController@filterByPestsDiseaseWeed'));
-Route::get('agrochem/filter',array('uses'=>'AgrochemController@filter'));
-Route::get('agrochem/filter/{search_value}',array('uses'=>'AgrochemController@filter'));
+//Route::get('agrochem/filter/active_ingredients',array('uses'=>'AgrochemController@filterByActiveIngredients'));
+//Route::get('agrochem/filter/crops',array('uses'=>'AgrochemController@filterByCrops'));
+//Route::get('agrochem/filter/pdw',array('uses'=>'AgrochemController@filterByPestsDiseaseWeed'));
+Route::get('agrochem/filter/{search_value?}',array('uses'=>'AgrochemController@filter'));
 Route::get('agrochem/datatable',array('uses'=>'AgrochemController@dataTable'));
 Route::get('agrochem/names',array('uses'=>'AgrochemController@getAgrochemNames'));
-Route::get('agrochem/summary/names/active_ingredients',array('uses'=>'AgrochemController@summaryNamesByActiveIngredients'));
-Route::get('agrochem/summary/names/crops',array('uses'=>'AgrochemController@summaryNamesByCrops'));
-Route::get('agrochem/summary/names/pdw',array('uses'=>'AgrochemController@summaryNamesByPestsDiseaseWeed'));
-Route::get('agrochem/summary/names',array('uses'=>'AgrochemController@summaryNames'));
-Route::get('agrochem/summary/names/{search_value}',array('uses'=>'AgrochemController@summaryNames'));
-Route::get('agrochem/summary/count/active_ingredients',array('uses'=>'AgrochemController@summaryCountActiveIngredients'));
-Route::get('agrochem/summary/count/crops',array('uses'=>'AgrochemController@summaryCountCrops'));
-Route::get('agrochem/summary/count/pdw',array('uses'=>'AgrochemController@summaryCountPestsDiseaseWeed'));
-Route::get('agrochem/summary/count',array('uses'=>'AgrochemController@summaryCount'));
-Route::get('agrochem/summary/count/{search_value}',array('uses'=>'AgrochemController@summaryCount'));
+//Route::get('agrochem/summary/names/active_ingredients',array('uses'=>'AgrochemController@summaryNamesByActiveIngredients'));
+//Route::get('agrochem/summary/names/crops',array('uses'=>'AgrochemController@summaryNamesByCrops'));
+//Route::get('agrochem/summary/names/pdw',array('uses'=>'AgrochemController@summaryNamesByPestsDiseaseWeed'));
+Route::get('agrochem/summary/names/{search_value?}',array('uses'=>'AgrochemController@summaryNames'));
+//Route::get('agrochem/summary/count/active_ingredients',array('uses'=>'AgrochemController@summaryCountActiveIngredients'));
+//Route::get('agrochem/summary/count/crops',array('uses'=>'AgrochemController@summaryCountCrops'));
+//Route::get('agrochem/summary/count/pdw',array('uses'=>'AgrochemController@summaryCountPestsDiseaseWeed'));
+Route::get('agrochem/summary/count/{search_value?}',array('uses'=>'AgrochemController@summaryCount'));
 Route::get('agrochem/{id}/active_ingredients',array('uses'=>'AgrochemController@findActiveIngredients'));
 Route::get('agrochem/{id}/commercial_organic',array('uses'=>'AgrochemController@findCommercialOrganic'));
 Route::get('agrochem/{id}/crops',array('uses'=>'AgrochemController@findCrops'));
@@ -358,16 +328,13 @@ Route::get('agrochem/{id}',array('uses'=>'AgrochemController@find'));
 
 //CommercialOrganic Routes
 Route::get('commercial_organic',array('uses'=>'CommercialOrganicController@all'));
-Route::get('commercial_organic/filter',array('uses'=>'CommercialOrganicController@filter'));
-Route::get('commercial_organic/filter/{search_value}',array('uses'=>'CommercialOrganicController@filter'));
+Route::get('commercial_organic/filter/{search_value?}',array('uses'=>'CommercialOrganicController@filter'));
 Route::get('commercial_organic/datatable',array('uses'=>'CommercialOrganicController@dataTable'));
 Route::get('commercial_organic/names',array('uses'=>'CommercialOrganicController@getCommercialOrganicNames'));
-Route::get('commercial_organic/summary/names',array('uses'=>'CommercialOrganicController@summaryNames'));
-Route::get('commercial_organic/summary/names/{search_value}',array('uses'=>'CommercialOrganicController@summaryNames'));
+Route::get('commercial_organic/summary/names/{search_value?}',array('uses'=>'CommercialOrganicController@summaryNames'));
 Route::get('commercial_organic/summary/count/control_methods',array('uses'=>'CommercialOrganicController@summaryCountControlMethods'));
 Route::get('commercial_organic/summary/count/pdw',array('uses'=>'CommercialOrganicController@summaryCountPestsDiseaseWeed'));
-Route::get('commercial_organic/summary/count',array('uses'=>'CommercialOrganicController@summaryCount'));
-Route::get('commercial_organic/summary/count/{search_value}',array('uses'=>'CommercialOrganicController@summaryCount'));
+Route::get('commercial_organic/summary/count/{search_value?}',array('uses'=>'CommercialOrganicController@summaryCount'));
 Route::get('commercial_organic/{id}/agrochem',array('uses'=>'CommercialOrganicController@findAgrochemProducts'));
 Route::get('commercial_organic/{id}/control_methods',array('uses'=>'CommercialOrganicController@findControlMethods'));
 Route::get('commercial_organic/{id}/gap',array('uses'=>'CommercialOrganicController@findGap'));
@@ -379,15 +346,12 @@ Route::get('commercial_organic/{id}',array('uses'=>'CommercialOrganicController@
 
 //GAP Routes
 Route::get('gap',array('uses'=>'GapController@all'));
-Route::get('gap/filter',array('uses'=>'GapController@filter'));
-Route::get('gap/filter/{search_value}',array('uses'=>'GapController@filter'));
+Route::get('gap/filter/{search_value?}',array('uses'=>'GapController@filter'));
 Route::get('gap/datatable',array('uses'=>'GapController@dataTable'));
 Route::get('gap/names',array('uses'=>'GapController@getGapNames'));
-Route::get('gap/summary/names',array('uses'=>'GapController@summaryNames'));
-Route::get('gap/summary/names/{search_value}',array('uses'=>'GapController@summaryNames'));
+Route::get('gap/summary/names/{search_value?}',array('uses'=>'GapController@summaryNames'));
 Route::get('gap/summary/count/pdw',array('uses'=>'GapController@summaryCountPestsDiseaseWeed'));
-Route::get('gap/summary/count',array('uses'=>'GapController@summaryCount'));
-Route::get('gap/summary/count/{search_value}',array('uses'=>'GapController@summaryCount'));
+Route::get('gap/summary/count/{search_value?}',array('uses'=>'GapController@summaryCount'));
 Route::get('gap/{id}',array('uses'=>'GapController@find'));
 Route::get('gap/{id}/pdw',array('uses'=>'GapController@findPestsDiseaseWeed'));
 //--/GAP Routes
@@ -395,15 +359,12 @@ Route::get('gap/{id}/pdw',array('uses'=>'GapController@findPestsDiseaseWeed'));
 
 //HomeMadeOrganic Routes
 Route::get('homemade_organic',array('uses'=>'HomeMadeOrganicController@all'));
-Route::get('homemade_organic/filter',array('uses'=>'HomeMadeOrganicController@filter'));
-Route::get('homemade_organic/filter/{search_value}',array('uses'=>'HomeMadeOrganicController@filter'));
+Route::get('homemade_organic/filter/{search_value?}',array('uses'=>'HomeMadeOrganicController@filter'));
 Route::get('homemade_organic/datatable',array('uses'=>'HomeMadeOrganicController@dataTable'));
 Route::get('homemade_organic/names',array('uses'=>'HomeMadeOrganicController@getHomemadeOrganicNames'));
-Route::get('homemade_organic/summary/names',array('uses'=>'HomeMadeOrganicController@summaryNames'));
-Route::get('homemade_organic/summary/names/{search_value}',array('uses'=>'HomeMadeOrganicController@summaryNames'));
+Route::get('homemade_organic/summary/names/{search_value?}',array('uses'=>'HomeMadeOrganicController@summaryNames'));
 Route::get('homemade_organic/summary/count/pdw',array('uses'=>'HomeMadeOrganicController@summaryCountPestsDiseaseWeed'));
-Route::get('homemade_organic/summary/count',array('uses'=>'HomeMadeOrganicController@summaryCount'));
-Route::get('homemade_organic/summary/count/{search_value}',array('uses'=>'HomeMadeOrganicController@summaryCount'));
+Route::get('homemade_organic/summary/count/{search_value?}',array('uses'=>'HomeMadeOrganicController@summaryCount'));
 Route::get('homemade_organic/{id}',array('uses'=>'HomeMadeOrganicController@find'));
 Route::get('homemade_organic/{id}/pdw',array('uses'=>'HomeMadeOrganicController@findPestsDiseaseWeed'));
 //--/HomeMadeOrganic Routes
@@ -411,15 +372,12 @@ Route::get('homemade_organic/{id}/pdw',array('uses'=>'HomeMadeOrganicController@
 
 //LocalNames Routes
 Route::get('local_names',array('uses'=>'LocalNamesController@all'));
-Route::get('local_names/filter',array('uses'=>'LocalNamesController@filter'));
-Route::get('local_names/filter/{search_value}',array('uses'=>'LocalNamesController@filter'));
+Route::get('local_names/filter/{search_value?}',array('uses'=>'LocalNamesController@filter'));
 Route::get('local_names/datatable',array('uses'=>'LocalNamesController@dataTable'));
 Route::get('local_names/names',array('uses'=>'LocalNamesController@getLocalNameNames'));
-Route::get('local_names/summary/names',array('uses'=>'LocalNamesController@summaryNames'));
-Route::get('local_names/summary/names/{search_value}',array('uses'=>'LocalNamesController@summaryNames'));
+Route::get('local_names/summary/names/{search_value?}',array('uses'=>'LocalNamesController@summaryNames'));
 Route::get('local_names/summary/count/pdw',array('uses'=>'LocalNamesController@summaryCountPestsDiseaseWeed'));
-Route::get('local_names/summary/count',array('uses'=>'LocalNamesController@summaryCount'));
-Route::get('local_names/summary/count/{search_value}',array('uses'=>'LocalNamesController@summaryCount'));
+Route::get('local_names/summary/count/{search_value?}',array('uses'=>'LocalNamesController@summaryCount'));
 Route::get('local_names/{id}',array('uses'=>'LocalNamesController@find'));
 Route::get('local_names/{id}/pdw',array('uses'=>'LocalNamesController@findPestsDiseaseWeed'));
 //--/LocalNames Routes
@@ -427,16 +385,13 @@ Route::get('local_names/{id}/pdw',array('uses'=>'LocalNamesController@findPestsD
 
 //Crops Routes
 Route::get('crops',array('uses'=>'CropsController@all'));
-Route::get('crops/filter',array('uses'=>'CropsController@filter'));
-Route::get('crops/filter/{search_value}',array('uses'=>'CropsController@filter'));
+Route::get('crops/filter/{search_value?}',array('uses'=>'CropsController@filter'));
 Route::get('crops/datatable',array('uses'=>'CropsController@dataTable'));
 Route::get('crops/names',array('uses'=>'CropsController@getCropNames'));
-Route::get('crops/summary/names',array('uses'=>'CropsController@summaryNames'));
-Route::get('crops/summary/names/{search_value}',array('uses'=>'CropsController@summaryNames'));
+Route::get('crops/summary/names/{search_value?}',array('uses'=>'CropsController@summaryNames'));
 Route::get('crops/summary/count/agrochem',array('uses'=>'CropsController@summaryCountAgrochems'));
 Route::get('crops/summary/count/pdw',array('uses'=>'CropsController@summaryCountPestsDiseasesWeeds'));
-Route::get('crops/summary/count',array('uses'=>'CropsController@summaryCount'));
-Route::get('crops/summary/count/{search_value}',array('uses'=>'CropsController@summaryCount'));
+Route::get('crops/summary/count/{search_value?}',array('uses'=>'CropsController@summaryCount'));
 Route::get('crops/{id}',array('uses'=>'CropsController@find'));
 Route::get('crops/{id}/pdw/',array('uses'=>'CropsController@findPestsDiseasesWeeds'));
 Route::get('crops/{id}/agrochem/',array('uses'=>'CropsController@findAgrochems'));
@@ -448,16 +403,13 @@ Route::get('crops/{id}/gap',array('uses'=>'CropsController@findGap'));
 
 //CommercialOrganic Routes
 Route::get('control_methods',array('uses'=>'ControlMethodsController@all'));
-Route::get('control_methods/filter',array('uses'=>'ControlMethodsController@filter'));
-Route::get('control_methods/filter/{search_value}',array('uses'=>'ControlMethodsController@filter'));
+Route::get('control_methods/filter/{search_value?}',array('uses'=>'ControlMethodsController@filter'));
 Route::get('control_methods/datatable',array('uses'=>'ControlMethodsController@dataTable'));
 Route::get('control_methods/names',array('uses'=>'ControlMethodsController@getControlMethodNames'));
-Route::get('control_methods/summary/names',array('uses'=>'ControlMethodsController@summaryNames'));
-Route::get('control_methods/summary/names/{search_value}',array('uses'=>'ControlMethodsController@summaryNames'));
+Route::get('control_methods/summary/names/{search_value?}',array('uses'=>'ControlMethodsController@summaryNames'));
 Route::get('control_methods/summary/count/commercial_organic',array('uses'=>'ControlMethodsController@summaryCountCommercialOrganic'));
 Route::get('control_methods/summary/count/pdw',array('uses'=>'ControlMethodsController@summaryCountPestsDiseasesWeeds'));
-Route::get('control_methods/summary/count',array('uses'=>'ControlMethodsController@summaryCount'));
-Route::get('control_methods/summary/count/{search_value}',array('uses'=>'ControlMethodsController@summaryCount'));
+Route::get('control_methods/summary/count/{search_value?}',array('uses'=>'ControlMethodsController@summaryCount'));
 Route::get('control_methods/{id}',array('uses'=>'ControlMethodsController@find'));
 Route::get('control_methods/{id}/pdw/',array('uses'=>'ControlMethodsController@findPestsDiseasesWeeds'));
 Route::get('control_methods/{id}/commercial_organic/',array('uses'=>'ControlMethodsController@findCommercialOrganic'));
