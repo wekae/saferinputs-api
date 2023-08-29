@@ -172,20 +172,34 @@ class AgrochemRepositoryMySqlImpl implements AgrochemRepository
                     }
                 }])->where('id',$pdw->id)->firstOrFail();
 
-                if(count($item[$relation]) > 0){
+                if(count($item[$relation]) > 0 && !$this->existsInArray($items, $item)){
                     ++$total;
+                    array_push($items, $item);
                 }
-
-                array_push($items, $item);
             }catch(\Exception $e){
 //            Log::info($e, [$this]);
                 return null;
             }
         }
+        if(count($items) == 0){
+            return null;
+        }
         return array(
             "total"=> $total,
             "items"=>$items
         );
+    }
+    public function existsInArray($array, $entry)
+    {
+        $exists = false;
+        foreach ($array as $compare) {
+            if ($compare['id'] == $entry['id']) {
+                $exists = true;
+                break;
+            }
+        }
+
+        return $exists;
     }
 
     public function getAgrochemNames(){

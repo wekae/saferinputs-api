@@ -130,39 +130,46 @@ class ActiveIngredientsRepositoryMySqlImpl implements ActiveIngredientsRepositor
     }
     private function findRelationItemsForActiveIngredientPdw($relation, $request){
 
-        $active_ingredient = $this->activeIngredients->find($request->id);
-        $agrochem_products = $active_ingredient->agrochem;
-        $items = array();
-        $total = 0;
-        foreach ($agrochem_products as $agrochem){
-            $pests_diseases_weeds = $agrochem->pestsDiseaseWeed;
-            foreach ($pests_diseases_weeds as $pdw){
-                try{
-                    $item = PestsDiseaseWeed::with([$relation => function($query) use($request){
-                        foreach ($request->except('id') as $key => $value){
-                            if($key=="toxic"){
-                                $query = $query->where($key,UtilsFacade::formatToBinary($value));
-                            }else{
-                                $query = $query->where($key,'like', '%'.$value.'%');
+        try{
+            $active_ingredient = $this->activeIngredients->find($request->id);
+            $agrochem_products = $active_ingredient->agrochem;
+            $items = array();
+            $total = 0;
+            foreach ($agrochem_products as $agrochem){
+                $pests_diseases_weeds = $agrochem->pestsDiseaseWeed;
+                foreach ($pests_diseases_weeds as $pdw){
+                    try{
+                        $item = PestsDiseaseWeed::with([$relation => function($query) use($request){
+                            foreach ($request->except('id') as $key => $value){
+                                if($key=="toxic"){
+                                    $query = $query->where($key,UtilsFacade::formatToBinary($value));
+                                }else{
+                                    $query = $query->where($key,'like', '%'.$value.'%');
+                                }
                             }
+                        }])->where('id',$pdw->id)->firstOrFail();
+
+
+                        if(count($item[$relation]) > 0 && !$this->existsInArray($items, $item)){
+                            ++$total;
+                            array_push($items, $item);
                         }
-                    }])->where('id',$pdw->id)->firstOrFail();
-
-
-                    if(count($item[$relation]) > 0 && !$this->existsInArray($items, $item)){
-                        ++$total;
-                        array_push($items, $item);
-                    }
-                }catch(\Exception $e){
+                    }catch(\Exception $e){
 //            Log::info($e, [$this]);
-                    return null;
+                        return null;
+                    }
                 }
             }
+            if(count($items) == 0){
+                return null;
+            }
+            return array(
+                "total"=> $total,
+                "items"=>$items
+            );
+        }catch(\Exception $e){
+            return null;
         }
-        return array(
-            "total"=> $total,
-            "items"=>$items
-        );
     }
     public function existsInArray($array, $entry)
     {
@@ -170,6 +177,7 @@ class ActiveIngredientsRepositoryMySqlImpl implements ActiveIngredientsRepositor
         foreach ($array as $compare) {
             if ($compare['id'] == $entry['id']) {
                 $exists = true;
+                break;
             }
         }
 
