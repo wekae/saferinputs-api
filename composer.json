@@ -23,6 +23,7 @@
         "laravel/helpers": "^1.2",
         "laravel/passport": "^9.2",
         "laravel/scout": "^8.0",
+        "laravel/telescope": "3.5.1",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.2",
         "lcobucci/jwt": "^3.3",

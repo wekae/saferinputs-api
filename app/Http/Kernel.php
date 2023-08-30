@@ -102,6 +102,10 @@ class Kernel extends HttpKernel
      */
     protected function schedule(Schedule $schedule)
     {
+
         $schedule->command('passport:purge')->hourly();
+
+//        delete all records created over 48 hours ago
+        $schedule->command('telescope:prune --hours=48')->daily();
     }
 }
