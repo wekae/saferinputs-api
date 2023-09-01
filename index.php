@@ -21,10 +21,10 @@ define('LARAVEL_START', microtime(true));
 |
 */
 
-require __DIR__.'/../vendor/autoload.php';
+//require __DIR__.'/../vendor/autoload.php';
 
 //For use in deployment server
-//require __DIR__.'/core/vendor/autoload.php';
+require __DIR__.'/core/vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -38,10 +38,10 @@ require __DIR__.'/../vendor/autoload.php';
 |
 */
 
-$app = require_once __DIR__.'/../bootstrap/app.php';
+//$app = require_once __DIR__.'/../bootstrap/app.php';
 
 //For use in deployment server
-//$app = require_once __DIR__.'/core/bootstrap/app.php';
+$app = require_once __DIR__.'/core/bootstrap/app.php';
 
 /*
 |--------------------------------------------------------------------------
