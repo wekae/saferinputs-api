@@ -1,7 +1,6 @@
 /public/hot
 /public/assets/img
 /public/storage/public/
-/storage/*.key
 /.idea
 clear.bat
 .env.backup
