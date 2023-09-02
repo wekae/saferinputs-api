@@ -1,15 +1,9 @@
-/node_modules
 /public/hot
 /public/assets/img
-/public/storage
-/storage/*.key
-/vendor
 /.idea
 clear.bat
 .env.backup
 .phpunit.result.cache
-Homestead.json
-Homestead.yaml
 npm-debug.log
 yarn-error.log
 *.zip
